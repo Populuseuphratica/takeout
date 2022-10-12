@@ -2,7 +2,7 @@ package com.killstan.takeout.service.impl;
 
 import com.killstan.takeout.entity.po.Order;
 import com.killstan.takeout.mapper.po.OrderMapper;
-import com.killstan.takeout.service.IOrderService;
+import com.killstan.takeout.service.OrderService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2022-10-12
  */
 @Service
-public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements IOrderService {
+public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements OrderService {
 
 }

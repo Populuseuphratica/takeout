@@ -2,7 +2,7 @@ package com.killstan.takeout.service.impl;
 
 import com.killstan.takeout.entity.po.Employee;
 import com.killstan.takeout.mapper.po.EmployeeMapper;
-import com.killstan.takeout.service.IEmployeeService;
+import com.killstan.takeout.service.EmployeeService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2022-10-12
  */
 @Service
-public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> implements IEmployeeService {
+public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> implements EmployeeService {
 
 }

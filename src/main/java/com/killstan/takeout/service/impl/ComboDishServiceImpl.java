@@ -2,7 +2,7 @@ package com.killstan.takeout.service.impl;
 
 import com.killstan.takeout.entity.po.ComboDish;
 import com.killstan.takeout.mapper.po.ComboDishMapper;
-import com.killstan.takeout.service.IComboDishService;
+import com.killstan.takeout.service.ComboDishService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2022-10-12
  */
 @Service
-public class ComboDishServiceImpl extends ServiceImpl<ComboDishMapper, ComboDish> implements IComboDishService {
+public class ComboDishServiceImpl extends ServiceImpl<ComboDishMapper, ComboDish> implements ComboDishService {
 
 }
