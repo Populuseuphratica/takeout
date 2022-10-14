@@ -26,10 +26,10 @@
         </el-form-item>
         <el-form-item
           label="员工姓名:"
-          prop="name"
+          prop="empName"
         >
           <el-input
-            v-model="ruleForm.name"
+            v-model="ruleForm.empName"
             placeholder="请输入员工姓名"
             maxlength="20"
           />
@@ -56,10 +56,10 @@
         </el-form-item>
         <el-form-item
           label="身份证号:"
-          prop="idNumber"
+          prop="idCard"
         >
           <el-input
-            v-model="ruleForm.idNumber"
+            v-model="ruleForm.idCard"
             placeholder="请输入身份证号"
             maxlength="20"
           />
@@ -106,10 +106,10 @@
             id: '',
             actionType : '',
             ruleForm : {
-                'name': '',
+                'empName': '',
                 'phone': '',
                 'sex': '男',
-                'idNumber': '',
+                'idCard': '',
                 username: ''
             }
           }
@@ -124,9 +124,9 @@
                 }
               ],
               //姓名
-              name: [{ required: true, 'validator': checkName, 'trigger': 'blur' }],
+              empName: [{ required: true, 'validator': checkName, 'trigger': 'blur' }],
               'phone': [{ 'required': true, 'validator': checkPhone, 'trigger': 'blur' }],
-              'idNumber': [{ 'required': true, 'validator': validID, 'trigger': 'blur' }]
+              'idCard': [{ 'required': true, 'validator': validID, 'trigger': 'blur' }]
             }
           }
         },
@@ -169,12 +169,12 @@
                       } else {
                         this.ruleForm = {
                           username: '',
-                          'name': '',
+                          'empName': '',
                           'phone': '',
                           // 'password': '',
                           // 'rePassword': '',/
                           'sex': '男',
-                          'idNumber': ''
+                          'idCard': ''
                         }
                       }
                     } else {

@@ -1,6 +1,5 @@
 package com.killstan.takeout.entity.vo;
 
-import com.baomidou.mybatisplus.extension.api.R;
 import lombok.Data;
 
 /**
@@ -20,7 +19,7 @@ public class ResultVo<T> {
     /**
      * 错误信息
      */
-    private String message;
+    private String msg;
 
     /**
      * 返回数据
@@ -50,7 +49,7 @@ public class ResultVo<T> {
     public static ResultVo fail(String message) {
         ResultVo resultVo = new ResultVo();
         resultVo.code = 0;
-        resultVo.message = message;
+        resultVo.msg = message;
         return resultVo;
     }
 
@@ -64,7 +63,7 @@ public class ResultVo<T> {
     public static ResultVo fail(Integer code, String message) {
         ResultVo resultVo = new ResultVo();
         resultVo.code = code;
-        resultVo.message = message;
+        resultVo.msg = message;
         return resultVo;
     }
 }

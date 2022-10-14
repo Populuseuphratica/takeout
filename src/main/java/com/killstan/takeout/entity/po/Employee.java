@@ -2,6 +2,9 @@ package com.killstan.takeout.entity.po;
 
 import java.time.LocalDateTime;
 import java.io.Serializable;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -22,7 +25,8 @@ public class Employee implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value = "主键：自增id")
+    @ApiModelProperty(value = "员工id")
+    @TableId(type = IdType.ASSIGN_ID)
     private Long empId;
 
     @ApiModelProperty(value = "员工名")
@@ -37,7 +41,7 @@ public class Employee implements Serializable {
     @ApiModelProperty(value = "电话号码")
     private String phone;
 
-    @ApiModelProperty(value = "性别，0：默认，1：男，2：女")
+    @ApiModelProperty(value = "性别，0：女，1：男")
     private Integer sex;
 
     @ApiModelProperty(value = "身份证号")
