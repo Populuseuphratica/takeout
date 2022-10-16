@@ -7,13 +7,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.killstan.takeout.entity.po.Employee;
 import com.killstan.takeout.entity.vo.ResultVo;
 import com.killstan.takeout.service.EmployeeService;
-import com.killstan.takeout.util.ThreadLocalForEmp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -104,14 +102,7 @@ public class EmployeeController {
             return ResultVo.fail("该用户已存在");
         }
 
-        // 设定员工表的属性
-        LocalDateTime now = LocalDateTime.now();
-        employee.setCreateTime(now);
-        employee.setUpdateTime(now);
-        Long employeeId = ThreadLocalForEmp.get();
-        employee.setCreateId(employeeId);
-        employee.setUpdateId(employeeId);
-        System.out.println(now);
+
         // 设定默认密码为123456
         employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
         employee.setStatus(1);
@@ -158,8 +149,7 @@ public class EmployeeController {
     @PutMapping
     public ResultVo updateEmpStatus(@RequestBody Employee employee){
 
-        employee.setUpdateId(ThreadLocalForEmp.get());
-        employee.setUpdateTime(LocalDateTime.now());
+        // 前端会传过来这2个字段，使自动填充失效
         employeeService.updateById(employee);
         return ResultVo.success(null);
     }
