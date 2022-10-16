@@ -2,20 +2,19 @@ package com.killstan.takeout.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.killstan.takeout.entity.po.Employee;
 import com.killstan.takeout.entity.vo.ResultVo;
 import com.killstan.takeout.service.EmployeeService;
 import com.killstan.takeout.util.ThreadLocalForEmp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -32,6 +31,13 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
+    /**
+     * 员工登录
+     *
+     * @param employee
+     * @param session
+     * @return
+     */
     @PostMapping("/login")
     public ResultVo<Employee> login(@RequestBody Employee employee, HttpSession session) {
 
@@ -56,13 +62,19 @@ public class EmployeeController {
 
         // TODO 将登录员工存入 redis
         // 将员工 id 放入session
-        session.setAttribute("employeeId",emp.getEmpId());
-        // 将密码清空避免前台暴露
+        session.setAttribute("employeeId", emp.getEmpId());
+        // 因为要返回页面，密码清空
         emp.setPassword(null);
         //　登录成功返回员工信息
         return ResultVo.success(emp);
     }
 
+    /**
+     * 登出
+     *
+     * @param session
+     * @return
+     */
     @PostMapping("/logout")
     public ResultVo logout(HttpSession session) {
         session.removeAttribute("employeeId");
@@ -70,6 +82,12 @@ public class EmployeeController {
         return ResultVo.success(null);
     }
 
+    /**
+     * 添加员工
+     *
+     * @param employee
+     * @return
+     */
     @PostMapping
     public ResultVo addEmployee(@RequestBody Employee employee) {
 
@@ -98,12 +116,51 @@ public class EmployeeController {
         employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
         employee.setStatus(1);
         boolean save = employeeService.save(employee);
-        if(save){
+        if (save) {
             return ResultVo.success(null);
-        }else{
+        } else {
             return ResultVo.fail(null);
         }
+    }
 
+    /**
+     * 员工管理页面，查询员工列表
+     * @param current 当前页
+     * @param pageSize 页面数据条数
+     * @param empName 员工名
+     * @return 员工数据
+     */
+    @GetMapping("/page")
+    public ResultVo<IPage> empList(@RequestParam("page") Integer current, @RequestParam("pageSize") Integer pageSize, @RequestParam(value = "empName", required = false) String empName) {
+
+        Page page = new Page<Employee>(current, pageSize);
+        LambdaQueryWrapper<Employee> lambdaQueryWrapper = new LambdaQueryWrapper();
+        // 按最后更新时间排序
+        lambdaQueryWrapper.orderByDesc(Employee::getUpdateTime);
+        // 如果带了 empName 检索条件
+        if (empName != null) {
+            lambdaQueryWrapper.like(Employee::getUsername, empName);
+        }
+        IPage result = employeeService.page(page,lambdaQueryWrapper);
+        // 因为要返回页面，密码清空
+        List<Employee> records = result.getRecords();
+        records.forEach(e -> e.setPassword(null));
+
+        return ResultVo.success(result);
+    }
+
+    /**
+     * 更新员工状态
+     * @param employee 待更新员工 id与 要更新到的状态
+     * @return
+     */
+    @PutMapping
+    public ResultVo updateEmpStatus(@RequestBody Employee employee){
+
+        employee.setUpdateId(ThreadLocalForEmp.get());
+        employee.setUpdateTime(LocalDateTime.now());
+        employeeService.updateById(employee);
+        return ResultVo.success(null);
     }
 
 

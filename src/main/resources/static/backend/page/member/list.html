@@ -47,7 +47,7 @@
         class="tableBox"
       >
         <el-table-column
-          prop="name"
+          prop="empName"
           label="员工姓名"
         ></el-table-column>
         <el-table-column
@@ -73,7 +73,7 @@
               type="text"
               size="small"
               class="blueBug"
-              @click="addMemberHandle(scope.row.id)"
+              @click="addMemberHandle(scope.row.empId)"
               :class="{notAdmin:user !== 'admin'}"
             >
               编辑
@@ -136,7 +136,7 @@
             const params = {
               page: this.page,
               pageSize: this.pageSize,
-              name: this.input ? this.input : undefined
+              empName: this.input ? this.input : undefined
             }
             await getMemberList(params).then(res => {
               if (String(res.code) === '1') {
@@ -169,14 +169,14 @@
           },
           //状态修改
           statusHandle (row) {
-            this.id = row.id
+            this.empId = row.empId
             this.status = row.status
             this.$confirm('确认调整该账号的状态?', '提示', {
               'confirmButtonText': '确定',
               'cancelButtonText': '取消',
               'type': 'warning'
               }).then(() => {
-              enableOrDisableEmployee({ 'id': this.id, 'status': !this.status ? 1 : 0 }).then(res => {
+              enableOrDisableEmployee({ 'empId': this.empId, 'status': !this.status ? 1 : 0 }).then(res => {
                 console.log('enableOrDisableEmployee',res)
                 if (String(res.code) === '1') {
                   this.$message.success('账号状态更改成功！')
