@@ -150,7 +150,8 @@ public class EmployeeController {
     }
 
     /**
-     * 更新员工状态
+     * 根据 id 更新员工信息
+     * 根据 id 禁用与启用员工
      * @param employee 待更新员工 id与 要更新到的状态
      * @return
      */
@@ -161,6 +162,21 @@ public class EmployeeController {
         employee.setUpdateTime(LocalDateTime.now());
         employeeService.updateById(employee);
         return ResultVo.success(null);
+    }
+
+    /**
+     * 根据 id 获取员工信息
+     * @param empId
+     * @return
+     */
+    @GetMapping("/{empId}")
+    public ResultVo<Employee> getEmpById(@PathVariable("empId") Long empId){
+        Employee emp = employeeService.getById(empId);
+        if(emp == null){
+            return  ResultVo.fail("该用户不存在");
+        }
+        emp.setPassword(null);
+        return ResultVo.success(emp);
     }
 
 
