@@ -1,12 +1,17 @@
 package com.killstan.takeout.entity.po;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.io.Serializable;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -24,6 +29,7 @@ public class Dish implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "菜品id")
+    @TableId(type = IdType.ASSIGN_ID)
     private Long dishId;
 
     @ApiModelProperty(value = "菜品名")
@@ -51,15 +57,19 @@ public class Dish implements Serializable {
     private Integer sort;
 
     @ApiModelProperty(value = "创建时间")
+    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
     @ApiModelProperty(value = "最近一次修正时间")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
     @ApiModelProperty(value = "创建人id")
+    @TableField(fill = FieldFill.INSERT)
     private Long createId;
 
     @ApiModelProperty(value = "修正人id")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateId;
 
     @ApiModelProperty(value = "是否删除 0：没删除；1：删除")
