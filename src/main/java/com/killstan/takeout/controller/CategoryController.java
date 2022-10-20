@@ -15,6 +15,8 @@ import com.killstan.takeout.service.DishService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * <p>
  * 分类表 前端控制器
@@ -73,6 +75,12 @@ public class CategoryController {
         return ResultVo.success(null);
     }
 
+    /**
+     * 删除分类
+     * 如果该分类下有菜品或套餐，则不删除
+     * @param categoryId
+     * @return
+     */
     @DeleteMapping
     public ResultVo deleteCategory(@RequestParam("id") Long categoryId){
         LambdaQueryWrapper<Combo> comboQueryWrapper = new LambdaQueryWrapper();
@@ -98,6 +106,21 @@ public class CategoryController {
         }
         return ResultVo.fail("删除失败，请刷新后重试");
     }
+
+    /**
+     * 根据分类类型获取分类
+     * @param cgType
+     * @return 分类list
+     */
+    @GetMapping("/list")
+    public ResultVo<List<Category>> getCategoryByType(Integer cgType){
+        LambdaQueryWrapper<Category> lambdaQueryWrapper = new LambdaQueryWrapper();
+        lambdaQueryWrapper.eq(Category::getCgType,cgType);
+        lambdaQueryWrapper.orderByAsc(Category::getSort);
+        List<Category> list = categoryService.list(lambdaQueryWrapper);
+        return ResultVo.success(list);
+    }
+
 
 }
 

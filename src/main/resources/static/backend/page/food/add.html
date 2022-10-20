@@ -61,10 +61,10 @@
         <div>
           <el-form-item
             label="菜品名称:"
-            prop="name"
+            prop="dishName"
           >
             <el-input
-              v-model="ruleForm.name"
+              v-model="ruleForm.dishName"
               placeholder="请填写菜品名称"
               maxlength="20"
             />
@@ -77,7 +77,7 @@
               v-model="ruleForm.categoryId"
               placeholder="请选择菜品分类"
             >
-              <el-option v-for="(item,index) in dishList" :key="index" :label="item.name" :value="item.id" />
+              <el-option v-for="(item,index) in categoryList" :key="index" :label="item.categoryName" :value="item.categoryId" />
             </el-select>
           </el-form-item>
         </div>
@@ -265,7 +265,7 @@
             value: '',
             imageUrl: '',
             actionType: '',
-            dishList: [],
+            categoryList: [],
             dishFlavorsData: [],
             dishFlavors: [],
             vueRest : '1',
@@ -389,9 +389,9 @@
 
           // 获取菜品分类
           getDishList () {
-            getCategoryList({ 'type': 1 }).then(res => {
+            getCategoryList({ 'cgType': 1 }).then(res => {
               if (res.code === 1) {
-                this.dishList = res.data
+                this.categoryList = res.data
               } else {
                 this.$message.error(res.msg || '操作失败')
               }
@@ -510,8 +510,8 @@
             if(response.code === 0 && response.msg === '未登录'){
               window.top.location.href = '/backend/page/login/login.html'
             }else{
-              this.imageUrl = `/common/download?name=${response.data}`
-              this.ruleForm.image = response.data
+              this.imageUrl = `${response.data}`
+              // this.ruleForm.image = response.data
             }
           },
 
