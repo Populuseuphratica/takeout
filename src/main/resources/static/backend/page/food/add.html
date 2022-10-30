@@ -272,11 +272,11 @@
             index : 0,
             inputStyle  : {'flex':1},
             ruleForm  : {
-              'name': '',
-              'id': '',
+              'dishName': '',
+              'dishId': '',
               'price': '',
               'code': '',
-              'image': '',
+              'imageUrl': '',
               'description': '',
               'dishFlavors': [],
               'status': true,
@@ -288,7 +288,7 @@
         computed: {
           rules () {
             return {
-              'name': [
+              'dishName': [
                 {'required': true, 'message': '请填写菜品名称', 'trigger': 'blur'}
               ],
               'categoryId': [
@@ -344,7 +344,7 @@
                 console.log('this.dishFlavors',this.dishFlavors)
                 // this.ruleForm.id = res.data.data.categoryId
                 // this.imageUrl = res.data.data.image
-                this.imageUrl = `/common/download?name=${res.data.image}`
+                this.imageUrl = `${res.data.imageUrl}`
               } else {
                 this.$message.error(res.msg || '操作失败')
               }
@@ -469,11 +469,11 @@
                         // this.dishFlavorsData = []
                         this.imageUrl = ''
                         this.ruleForm = {
-                          'name': '',
-                          'id': '',
+                          'dishName': '',
+                          'dishId': '',
                           'price': '',
                           'code': '',
-                          'image': '',
+                          'imageUrl': '',
                           'description': '',
                           'dishFlavors': [],
                           'status': true,
@@ -511,7 +511,7 @@
               window.top.location.href = '/backend/page/login/login.html'
             }else{
               this.imageUrl = `${response.data}`
-              // this.ruleForm.image = response.data
+              this.ruleForm.imageUrl = response.data
             }
           },
 

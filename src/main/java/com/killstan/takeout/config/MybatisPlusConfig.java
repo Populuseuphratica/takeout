@@ -51,9 +51,12 @@ public class MybatisPlusConfig{
                 log.info("start insert fill ....");
 
                 LocalDateTime now = LocalDateTime.now();
-                metaObject.setValue("createTime",now);
+                // 如果字段存在，且有注解，则自动填充
+                this.strictInsertFill(metaObject, "createTime", LocalDateTime.class, now);
+                this.strictInsertFill(metaObject, "createId", Long.class, ThreadLocalForEmp.get());
+
+                // 一定存在的字段
                 metaObject.setValue("updateTime",now);
-                metaObject.setValue("createId",ThreadLocalForEmp.get());
                 metaObject.setValue("updateId",ThreadLocalForEmp.get());
 
             }

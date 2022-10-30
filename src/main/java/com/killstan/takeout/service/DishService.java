@@ -1,7 +1,9 @@
 package com.killstan.takeout.service;
 
-import com.killstan.takeout.entity.po.Dish;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.killstan.takeout.entity.po.Dish;
+import com.killstan.takeout.entity.vo.DishVo;
+import com.killstan.takeout.entity.vo.ResultVo;
 
 /**
  * <p>
@@ -13,4 +15,19 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface DishService extends IService<Dish> {
 
+    /**
+     * 添加菜品
+     * @param dishVo
+     * @return
+     */
+    public ResultVo addDish(DishVo dishVo);
+
+    /**
+     * 取得菜品列表
+     * @param page 当前页
+     * @param pageSize 页面size
+     * @param dishName 菜品名，可为 null
+     * @return
+     */
+    ResultVo listDish(Integer page, Integer pageSize, String dishName);
 }

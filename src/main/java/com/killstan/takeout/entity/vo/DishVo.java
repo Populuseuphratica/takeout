@@ -1,9 +1,8 @@
-package com.killstan.takeout.entity.po;
+package com.killstan.takeout.entity.vo;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.killstan.takeout.entity.po.Flavor;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -11,6 +10,7 @@ import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value="Dish对象", description="菜品")
-public class Dish {
+public class DishVo {
 
     @ApiModelProperty(value = "菜品id")
     @TableId(type = IdType.ASSIGN_ID)
@@ -34,6 +34,9 @@ public class Dish {
 
     @ApiModelProperty(value = "分类id")
     private Long categoryId;
+
+    @ApiModelProperty(value = "分类名")
+    private String categoryName;
 
     @ApiModelProperty(value = "菜品价格")
     private BigDecimal price;
@@ -53,24 +56,10 @@ public class Dish {
     @ApiModelProperty(value = "排序，越小越前")
     private Integer sort;
 
-    @ApiModelProperty(value = "创建时间")
-    @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
+    @ApiModelProperty(value = "菜品口味list")
+    private List<Flavor> flavors;
 
     @ApiModelProperty(value = "最近一次修正时间")
-    @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
-
-    @ApiModelProperty(value = "创建人id")
-    @TableField(fill = FieldFill.INSERT)
-    private Long createId;
-
-    @ApiModelProperty(value = "修正人id")
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Long updateId;
-
-    @ApiModelProperty(value = "是否删除 0：没删除；1：删除")
-    private Integer isDelete;
-
 
 }

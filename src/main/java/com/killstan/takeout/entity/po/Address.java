@@ -1,11 +1,11 @@
 package com.killstan.takeout.entity.po;
 
-import java.time.LocalDateTime;
-import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -18,9 +18,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value="Address对象", description="地址表")
-public class Address implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class Address {
 
     @ApiModelProperty(value = "地址id")
     private Long addressId;

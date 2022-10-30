@@ -1,11 +1,15 @@
 package com.killstan.takeout.entity.po;
 
-import java.time.LocalDateTime;
-import java.io.Serializable;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -18,10 +22,9 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value="Flavor对象", description="口味表")
-public class Flavor implements Serializable {
+public class Flavor {
 
-    private static final long serialVersionUID = 1L;
-
+    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
     @ApiModelProperty(value = "菜品id")
@@ -34,8 +37,10 @@ public class Flavor implements Serializable {
     private String value;
 
     @ApiModelProperty(value = "最后修改时间")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateId;
 
     @ApiModelProperty(value = "0：使用；1：删除")

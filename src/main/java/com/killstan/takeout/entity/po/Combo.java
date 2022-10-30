@@ -9,7 +9,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -24,9 +23,7 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value="Combo对象", description="套餐表")
-public class Combo implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class Combo {
 
     @ApiModelProperty(value = "套餐id")
     @TableId(type = IdType.ASSIGN_ID)

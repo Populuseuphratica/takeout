@@ -51,14 +51,14 @@
           width="25"
         ></el-table-column>
         <el-table-column
-          prop="name"
+          prop="dishName"
           label="菜品名称"
         ></el-table-column>
         <el-table-column prop="image" label="图片" align="center">
           <template slot-scope="{ row }">
             <el-image style="width: auto; height: 40px; border:none;cursor: pointer;" 
-            :src="getImage(row.image)" 
-            :preview-src-list="[ `/common/download?name=${row.image}` ]" >
+            :src="row.imageUrl">
+<!--            :preview-src-list="[ `${row.imageUrl}` ]" >-->
             <div slot="error" class="image-slot">
               <img src="./../../images/noImg.png"  style="width: auto; height: 40px; border:none;" >
             </div>  
@@ -162,7 +162,7 @@
             const params = {
               page: this.page,
               pageSize: this.pageSize,
-              name: this.input ? this.input : undefined
+              dishName: this.input ? this.input : undefined
             }
             await getDishPage(params).then(res => {
               if (String(res.code) === '1') {

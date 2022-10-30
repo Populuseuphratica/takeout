@@ -9,7 +9,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -23,9 +22,7 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value="Category对象", description="分类表")
-public class Category implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class Category{
 
     @ApiModelProperty(value = "分类id")
     @TableId(type = IdType.ASSIGN_ID)
