@@ -36,11 +36,42 @@ public class DishController {
         return resultVo;
     }
 
+    /**
+     * 获取菜品 list
+     * @param page 当前页
+     * @param pageSize 页面大小
+     * @param dishName 菜品名，可为空
+     * @return
+     */
     @GetMapping("/page")
     public ResultVo listDish(Integer page, Integer pageSize, @RequestParam(required = false) String dishName) {
 
         ResultVo resultVo = dishService.listDish(page, pageSize, dishName);
 
+        return resultVo;
+    }
+
+    /**
+     * 获取菜品信息
+     * @param dishId 菜品id
+     * @return
+     */
+    @GetMapping("{dishId}")
+    public ResultVo getDishById(@PathVariable("dishId") Long dishId){
+
+        ResultVo resultVo = dishService.getDishWithFlavorById(dishId);
+        return resultVo;
+    }
+
+    /**
+     * 更新菜品
+     * @param dishVo
+     * @return
+     */
+    @PutMapping()
+    public ResultVo updateDish(@RequestBody DishVo dishVo){
+
+        ResultVo resultVo = dishService.updateDish(dishVo);
         return resultVo;
     }
 }

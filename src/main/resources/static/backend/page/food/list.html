@@ -58,7 +58,6 @@
           <template slot-scope="{ row }">
             <el-image style="width: auto; height: 40px; border:none;cursor: pointer;" 
             :src="row.imageUrl">
-<!--            :preview-src-list="[ `${row.imageUrl}` ]" >-->
             <div slot="error" class="image-slot">
               <img src="./../../images/noImg.png"  style="width: auto; height: 40px; border:none;" >
             </div>  
@@ -94,7 +93,7 @@
               type="text"
               size="small"
               class="blueBug"
-              @click="addFoodtype(scope.row.id)"
+              @click="addFoodtype(scope.row.dishId)"
             >
               修改
             </el-button>

@@ -23,6 +23,13 @@ public interface DishService extends IService<Dish> {
     public ResultVo addDish(DishVo dishVo);
 
     /**
+     * 更新菜品
+     * @param dishVo
+     * @return
+     */
+    ResultVo updateDish(DishVo dishVo);
+
+    /**
      * 取得菜品列表
      * @param page 当前页
      * @param pageSize 页面size
@@ -30,4 +37,11 @@ public interface DishService extends IService<Dish> {
      * @return
      */
     ResultVo listDish(Integer page, Integer pageSize, String dishName);
+
+    /**
+     * 获取菜品信息，包含口味
+     * @param dishId 菜品id
+     * @return
+     */
+    ResultVo getDishWithFlavorById(Long dishId);
 }

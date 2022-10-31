@@ -1,5 +1,6 @@
 package com.killstan.takeout.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Sequence;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -41,38 +42,66 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
     @Transactional(rollbackFor = Exception.class)
     public ResultVo addDish(DishVo dishVo) {
 
-        // 根据雪花算法生成菜品 id
-        Sequence sequence = new Sequence();
-        long dishId = sequence.nextId();
+            // 根据雪花算法生成菜品 id
+            Sequence sequence = new Sequence();
+            long dishId = sequence.nextId();
 
-        // 存入口味
+            // 存入口味
+            List<Flavor> flavors = dishVo.getFlavors();
+
+            if (flavors != null && flavors.size() != 0) {
+                Iterator<Flavor> flavorIterable = flavors.iterator();
+                while (flavorIterable.hasNext()) {
+                    Flavor flavor = flavorIterable.next();
+                    String flavorName = flavor.getName();
+                    String flavorValue = flavor.getValue();
+                    if (StringUtils.hasLength(flavorName) && StringUtils.hasLength(flavorValue)) {
+                        flavor.setDishId(dishId);
+                        // 默认口味可使用
+                        flavor.setIsDeleted(0);
+
+                        //　TODO 批量插入
+                        // 数据量小，直接分条插入
+                        flavorService.save(flavor);
+                    }
+                }
+            }
+
+            // 保存菜品
+            Dish dish = new Dish();
+            BeanUtils.copyProperties(dishVo, dish);
+            dish.setDishId(dishId);
+            dish.setSort(1);
+            dish.setIsDelete(0);
+            save(dish);
+
+            return ResultVo.success(null);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ResultVo updateDish(DishVo dishVo){
+
+        // 删除空口味
         List<Flavor> flavors = dishVo.getFlavors();
-
         if (flavors != null && flavors.size() != 0) {
             Iterator<Flavor> flavorIterable = flavors.iterator();
             while (flavorIterable.hasNext()) {
                 Flavor flavor = flavorIterable.next();
                 String flavorName = flavor.getName();
                 String flavorValue = flavor.getValue();
-                if (StringUtils.hasLength(flavorName) && StringUtils.hasLength(flavorValue)) {
-                    flavor.setDishId(dishId);
-                    // 默认口味可使用
-                    flavor.setIsDeleted(0);
-
-                    //　TODO 批量插入
-                    // 数据量小，直接分条插入
-                    flavorService.save(flavor);
+                if (!(StringUtils.hasLength(flavorName) && StringUtils.hasLength(flavorValue))) {
+                    flavorIterable.remove();
                 }
             }
         }
+        // 保存口味
+        flavorService.updateBatchById(flavors);
 
         // 保存菜品
         Dish dish = new Dish();
         BeanUtils.copyProperties(dishVo, dish);
-        dish.setDishId(dishId);
-        dish.setSort(1);
-        dish.setIsDelete(0);
-        save(dish);
+        updateById(dish);
 
         return ResultVo.success(null);
     }
@@ -84,6 +113,22 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
         IPage<DishVo> resultPage = dishMapper.listDish(pageDish, dishName);
 
         return ResultVo.success(resultPage);
+    }
+
+    @Override
+    public ResultVo getDishWithFlavorById(Long dishId){
+
+        Dish dish = getById(dishId);
+
+        LambdaQueryWrapper<Flavor> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(Flavor::getDishId,dishId);
+        List<Flavor> flavors = flavorService.list(lambdaQueryWrapper);
+
+        DishVo dishVo = new DishVo();
+        BeanUtils.copyProperties(dish,dishVo);
+        dishVo.setFlavors(flavors);
+
+        return ResultVo.success(dishVo);
     }
 
 }
