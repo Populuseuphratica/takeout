@@ -2,4 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.killstan.takeout.mapper.po.ComboMapper">
 
+    <select id="listCombo" resultType="com.killstan.takeout.entity.vo.ComboVo">
+        SELECT c.combo_id,c.combo_name,ca.category_name,c.price,c.code,c.image_url,c.description,c.status,c.update_time,c.update_id,c.is_deleted
+        FROM combo c
+        LEFT JOIN category ca
+        ON c.category_id = ca.category_id
+        WHERE c.is_deleted = 0
+        <if test="comboName != null and comboName != ''">
+            AND c.combo_name like  CONCAT('%',#{comboName},'%')
+        </if>
+    </select>
 </mapper>

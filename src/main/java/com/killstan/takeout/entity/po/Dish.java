@@ -70,7 +70,7 @@ public class Dish {
     private Long updateId;
 
     @ApiModelProperty(value = "是否删除 0：没删除；1：删除")
-    private Integer isDelete;
+    private Integer isDeleted;
 
 
 }

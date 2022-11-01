@@ -175,11 +175,11 @@
         >
           <div>
             <el-form-item label="套餐名称:" prop="name" >
-              <el-input v-model="ruleForm.name" placeholder="请填写套餐名称" maxlength="20"/>
+              <el-input v-model="ruleForm.comboName" placeholder="请填写套餐名称" maxlength="20"/>
             </el-form-item>
             <el-form-item label="套餐分类:" prop="idType">
               <el-select v-model="ruleForm.idType" placeholder="请选择套餐分类" @change="$forceUpdate()">
-                <el-option v-for="(item, index) in setMealList" :key="index" :label="item.name" :value="item.id" />
+                <el-option v-for="(item, index) in comboList" :key="index" :label="item.categoryName" :value="item.categoryId" />
               </el-select>
             </el-form-item>
           </div>
@@ -197,14 +197,14 @@
                     <div class="addBut" style="margin-bottom: 20px" @click="openAddDish">+ 添加菜品</div>
                     <div class="table">
                       <el-table :data="dishTable" style="width: 100%">
-                        <el-table-column prop="name" label="名称" width="180" align="center"></el-table-column>
+                        <el-table-column prop="dishName" label="名称" width="180" align="center"></el-table-column>
                         <el-table-column prop="price" label="原价" width="180">
                           <template slot-scope="scope"> {{ Number(scope.row.price) / 100 }} </template>
                         </el-table-column>
                         <el-table-column prop="address" label="份数" align="center">
                           <template slot-scope="scope">
                             <el-input-number
-                              v-model="scope.row.copies"
+                              v-model="scope.row.count"
                               size="small"
                               :min="1"
                               :max="99"
@@ -289,8 +289,8 @@
                 v-for="(item, index) in dishType"
                 :key="index"
                 :class="{act:index == keyInd}"
-                @click="checkTypeHandle(index, item.id)"
-              >{{ item.name }}</span>
+                @click="checkTypeHandle(index, item.categoryId)"
+              >{{ item.categoryName }}</span>
             </div>
             <div class="tabList">
               <div class="table">
@@ -373,7 +373,7 @@
             id: '',
             actionType: '',
             value: '',
-            setMealList: [],
+            comboList: [],
             seachKey: '',
             dishList: [],
             imageUrl: '',
@@ -382,11 +382,11 @@
             dialogVisible: false,
             checkList: [],
             ruleForm: {
-              name: '',
+              comboName: '',
               categoryId: '',
               price: '',
               code: '',
-              image: '',
+              imageUrl: '',
               description: '',
               dishList: [],
               status: true,
@@ -403,7 +403,7 @@
         computed: {
           rules() {
             return {
-              name: {
+              comboName: {
                 required: true,
                 message: '请输入套餐名称',
                 trigger: 'blur',
@@ -448,7 +448,9 @@
           }
         },
         created() {
-          this.getDishTypeList()
+          // 获取套餐的分类
+          this.getComboCategoryList()
+          // 获取菜品的分类
           this.getDishType()
           this.id = requestUrlParam('id')
           this.actionType = this.id ? 'edit' : 'add'
@@ -459,14 +461,14 @@
         mounted() {},
         methods: {
           async init() {
-            querySetmealById(this.id).then((res) => {
+            queryComboById(this.id).then((res) => {
               if (String(res.code) === '1') {
                 this.ruleForm = res.data
                 this.ruleForm.status = res.data.status === '1'
                 this.ruleForm.price = res.data.price / 100
-                this.imageUrl = `/common/download?name=${res.data.image}`
-                this.checkList = res.data.setmealDishes
-                this.dishTable = res.data.setmealDishes
+                this.imageUrl = `${res.data.imageUrl}`
+                this.checkList = res.data.comboDishes
+                this.dishTable = res.data.comboDishes
                 this.ruleForm.idType = res.data.categoryId
                 // this.ruleForm.password = ''
               } else {
@@ -478,10 +480,10 @@
             this.seachKey = this.value
           },
           // 获取套餐分类
-          getDishTypeList() {
-            getCategoryList({ type: 2}).then((res) => {
+          getComboCategoryList() {
+            getCategoryList({ cgType: 2}).then((res) => {
               if (res.code === 1) {
-                this.setMealList = res.data.map((obj) => ({ ...obj, idType: obj.id }))
+                this.comboList = res.data.map((obj) => ({ ...obj, idType: obj.id }))
               } else {
                 this.$message.error(res.msg || '操作失败')
               }
@@ -505,7 +507,7 @@
             //搜索条件清空，菜品重新查询，菜品类别选第一个重新查询
             this.value = ''
             this.keyInd = 0
-            this.getDishList(this.dishType[0].id)
+            this.getDishList(this.dishType[0].categoryId)
           },
           // 取消添加菜品
           handleClose(done) {
@@ -519,7 +521,7 @@
           addTableList() {
             this.dishTable = JSON.parse(JSON.stringify(this.checkList))
             this.dishTable.forEach((n) => {
-              n.copies = 1
+              n.count = 1
             })
             this.dialogVisible = false
             // 添加处理逻辑清空选中list
@@ -530,15 +532,15 @@
               if (valid) {
                 let prams = { ...this.ruleForm }
                 prams.price *= 100
-                prams.setmealDishes = this.dishTable.map((obj) => ({
-                  copies: obj.copies,
+                prams.comboDishes = this.dishTable.map((obj) => ({
+                  count: obj.count,
                   dishId: obj.dishId,
-                  name: obj.name,
-                  price: obj.price,
+                  // name: obj.name,
+                  // price: obj.price,
                 }))
                 prams.status = this.ruleForm ? 1 : 0
                 prams.categoryId = this.ruleForm.idType
-                if(prams.setmealDishes.length < 1){
+                if(prams.comboDishes.length < 1){
                   this.$message.error('请选择菜品！')
                   return 
                 }
@@ -549,7 +551,7 @@
                 // delete prams.dishList
                 if (this.actionType == 'add') {
                   delete prams.id
-                  addSetmeal(prams)
+                  addCombo(prams)
                     .then((res) => {
                       if (res.code === 1) {
                         this.$message.success('套餐添加成功！')
@@ -560,14 +562,15 @@
                           this.dishList = []
                           this.dishTable = []
                           this.ruleForm = {
-                            name: '',
+                            comboName: '',
                             categoryId: '',
                             price: '',
                             code: '',
-                            image: '',
+                            imageUrl: '',
                             description: '',
                             dishList: [],
                             status: true,
+                            // TODO
                             id: '',
                             idType: '',
                           }
@@ -605,8 +608,8 @@
             if(response.code === 0 && response.msg === '未登录'){
               window.top.location.href = '/backend/page/login/login.html'
             }else{
-              this.imageUrl = `/common/download?name=${response.data}`
-              this.ruleForm.image = response.data
+              this.imageUrl = response.data
+              this.ruleForm.imageUrl = response.data
             }
           },
 
@@ -638,10 +641,11 @@
           },
           // 获取套餐分类
           getDishType () {
-            getCategoryList({'type':1}).then(res => {
+            getCategoryList({'cgType':1}).then(res => {
               if (res.code === 1) {
                 this.dishType = res.data
-                this.getDishList(res.data[0].id)
+                // 默认显示排序第一分类的菜品
+                this.getDishList(res.data[0].categoryId)
               } else {
                 this.$message.error(res.msg)
               }
@@ -658,10 +662,8 @@
                 }
                 let newArr = res.data;
                 newArr.forEach((n) => {
-                  n.dishId = n.id
-                  n.copies = 1
-                  // n.dishCopies = 1
-                  n.dishName = n.name
+                  // 设定菜品默认份数为 1
+                  n.count = 1
                 })
                 this.dishAddList = newArr
               } else {
@@ -670,25 +672,22 @@
             })
           },
 
+          // TODO
           // 关键词收搜菜品列表分类
-          getDishForName (name) {
-            queryDishList({name}).then(res => {
+          getDishForName (dishName) {
+            queryDishList({dishName}).then(res => {
               if (res.code === 1) {
-                let newArr = res.data
-                newArr.forEach((n) => {
-                  n.dishId = n.id
-                  n.dishName = n.name
-                })
-                this.dishAddList = newArr
+                // let newArr = res.data
+                this.dishAddList = res.data
               } else {
                 this.$message.error(res.msg)
               }
             })
           },
 
-          checkTypeHandle (ind,id) {
+          checkTypeHandle (ind,categoryId) {
             this.keyInd = ind
-            this.getDishList(id)
+            this.getDishList(categoryId)
           },
 
           checkedListHandle (value) {

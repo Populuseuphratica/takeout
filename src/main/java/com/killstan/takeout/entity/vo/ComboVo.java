@@ -1,9 +1,8 @@
-package com.killstan.takeout.entity.po;
+package com.killstan.takeout.entity.vo;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.killstan.takeout.entity.po.ComboDish;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -11,6 +10,7 @@ import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -23,14 +23,16 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value="Combo对象", description="套餐表")
-public class Combo {
+public class ComboVo {
 
     @ApiModelProperty(value = "套餐id")
-    @TableId(type = IdType.ASSIGN_ID)
     private Long comboId;
 
     @ApiModelProperty(value = "分类id")
     private Long categoryId;
+
+    @ApiModelProperty(value = "分类名")
+    private String categoryName;
 
     @ApiModelProperty(value = "套餐名")
     private String comboName;
@@ -47,24 +49,17 @@ public class Combo {
 
     private String imageUrl;
 
-    @ApiModelProperty(value = "创建时间")
-    @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
+    private List<ComboDish> comboDishes;
 
     @ApiModelProperty(value = "最后修改时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
-    @ApiModelProperty(value = "创建人id")
-    @TableField(fill = FieldFill.INSERT)
-    private Long createId;
 
     @ApiModelProperty(value = "最后修改人id")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateId;
 
-    @ApiModelProperty(value = "0：删除；1：活跃")
-    private Integer isDeleted;
 
 
 }

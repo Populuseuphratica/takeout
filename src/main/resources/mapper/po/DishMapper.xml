@@ -3,13 +3,13 @@
 <mapper namespace="com.killstan.takeout.mapper.po.DishMapper">
 
     <select id="listDish" resultType="com.killstan.takeout.entity.vo.DishVo">
-        SELECT d.dish_id,d.dish_name,c.category_name,d.price,code,d.image_url,d.description,d.status,d.sort,d.create_time,d.update_time,d.create_id,d.update_id,d.is_delete
+        SELECT d.dish_id,d.dish_name,c.category_name,d.price,d.code,d.image_url,d.description,d.status,d.sort,d.create_time,d.update_time,d.create_id,d.update_id,d.is_deleted
         FROM dish d
         LEFT JOIN category c
         ON d.category_id = c.category_id
-        WHERE d.is_delete = 0
+        WHERE d.is_deleted = 0
         <if test="dishName != null and dishName != ''">
-            AND d.dish_name = #{dishName}
+            AND d.dish_name like  CONCAT('%',#{dishName},'%')
         </if>
     </select>
 </mapper>

@@ -72,7 +72,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
             BeanUtils.copyProperties(dishVo, dish);
             dish.setDishId(dishId);
             dish.setSort(1);
-            dish.setIsDelete(0);
+            dish.setIsDeleted(0);
             save(dish);
 
             return ResultVo.success(null);

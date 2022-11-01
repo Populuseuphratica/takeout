@@ -1,11 +1,18 @@
 package com.killstan.takeout.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.killstan.takeout.entity.po.Dish;
 import com.killstan.takeout.entity.vo.DishVo;
 import com.killstan.takeout.entity.vo.ResultVo;
 import com.killstan.takeout.service.DishService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -74,5 +81,29 @@ public class DishController {
         ResultVo resultVo = dishService.updateDish(dishVo);
         return resultVo;
     }
+
+    /**
+     * 根据分类 id 获取一类的菜品
+     * @param categoryId
+     * @return
+     */
+    @GetMapping("list")
+    public ResultVo<List<DishVo>> getDishByCategoryId(@RequestParam(name = "categoryId",required = false) Long categoryId,@RequestParam(name = "dishName",required = false) String dishName){
+
+        LambdaQueryWrapper<Dish> lambdaQueryWrapper = new LambdaQueryWrapper();
+        lambdaQueryWrapper.eq(categoryId != null,Dish::getCategoryId,categoryId);
+        lambdaQueryWrapper.eq(StringUtils.hasLength(dishName),Dish::getDishName,dishName);
+        List<Dish> list = dishService.list(lambdaQueryWrapper);
+        List<DishVo> voList = new ArrayList<>();
+        for (Dish dish : list) {
+            DishVo dishVo = new DishVo();
+            BeanUtils.copyProperties(dish,dishVo);
+            voList.add(dishVo);
+        }
+
+        return ResultVo.success(voList);
+    }
+
+
 }
 
