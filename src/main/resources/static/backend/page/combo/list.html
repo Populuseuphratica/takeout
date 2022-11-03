@@ -115,7 +115,7 @@
               type="text"
               size="small"
               class="delBut non"
-              @click="deleteHandle('单删', scope.row.id)"
+              @click="deleteHandle('单删', scope.row.comboId)"
             >
               删除
             </el-button>
@@ -234,10 +234,10 @@
                 this.$message.error('批量操作，请先勾选操作菜品！')
                 return false
               }
-              params.ids = this.checkList.join(',')
+              params.comboIds = this.checkList.join(',')
               params.status = row
             } else {
-              params.ids = row.id
+              params.comboIds = row.comboId
               params.status = row.status ? '0' : '1'
             }
             this.$confirm('确认更改该套餐状态?', '提示', {
@@ -263,7 +263,7 @@
           handleSelectionChange (val){
             let checkArr = []
             val.forEach((n) => {
-              checkArr.push(n.id)
+              checkArr.push(n.comboId)
             })
             this.checkList = checkArr
           },

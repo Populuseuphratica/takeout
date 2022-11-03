@@ -8,11 +8,11 @@ const getComboPage = (params) => {
 }
 
 // 删除数据接口
-const deleteCombo = (ids) => {
+const deleteCombo = (comboIds) => {
   return $axios({
     url: '/combo',
     method: 'delete',
-    params: { ids }
+    params: { comboIds }
   })
 }
 
@@ -47,6 +47,6 @@ const comboStatusByStatus = (params) => {
   return $axios({
     url: `/combo/status/${params.status}`,
     method: 'post',
-    params: { ids: params.ids }
+    params: { comboIds: params.comboIds }
   })
 }
