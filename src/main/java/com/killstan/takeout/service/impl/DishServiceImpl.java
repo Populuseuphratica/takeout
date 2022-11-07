@@ -82,6 +82,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
     @Transactional(rollbackFor = Exception.class)
     public ResultVo updateDish(DishVo dishVo){
 
+        // TODO 修改口味，不是单纯的修改口味数据，可以删除或者新增
         // 删除空口味
         List<Flavor> flavors = dishVo.getFlavors();
         if (flavors != null && flavors.size() != 0) {

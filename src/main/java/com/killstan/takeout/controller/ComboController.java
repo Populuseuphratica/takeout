@@ -58,6 +58,12 @@ public class ComboController {
         return resultVo;
     }
 
+    /**
+     *
+     * @param status
+     * @param comboIds
+     * @return
+     */
     @PostMapping("/status/{status}")
     @Transactional(rollbackFor = Exception.class)
     public ResultVo updateStatus(@PathVariable("status") Integer status, @RequestParam List<Long> comboIds) {
@@ -65,6 +71,7 @@ public class ComboController {
         if (comboIds.size() == 0) {
             return ResultVo.fail("停售失败，参数错误，请刷新后重试");
         }
+        // TODO 采用updateBatch会快一点（减少数据库连接的使用），采用真正的批量更新会更快
         LambdaUpdateWrapper<Combo> lambdaUpdateWrapper = new LambdaUpdateWrapper();
         comboIds.forEach(comboId -> {
             if (!"".equals(comboId)) {
@@ -82,6 +89,7 @@ public class ComboController {
     @Transactional(rollbackFor = Exception.class)
     public ResultVo deleteCombo(@RequestParam List<Long> comboIds) {
 
+        // TODO 采用updateBatch会快一点（减少数据库连接的使用），采用真正的批量更新会更快
         LambdaUpdateWrapper<Combo> lambdaUpdateWrapper = new LambdaUpdateWrapper();
         comboIds.forEach(comboId -> {
             if (!"".equals(comboId)) {
