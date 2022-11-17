@@ -82,7 +82,8 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
     @Transactional(rollbackFor = Exception.class)
     public ResultVo updateDish(DishVo dishVo){
 
-        // TODO 修改口味，不是单纯的修改口味数据，可以删除或者新增
+        Long dishId = dishVo.getDishId();
+
         // 删除空口味
         List<Flavor> flavors = dishVo.getFlavors();
         if (flavors != null && flavors.size() != 0) {
@@ -93,13 +94,22 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
                 String flavorValue = flavor.getValue();
                 if (!(StringUtils.hasLength(flavorName) && StringUtils.hasLength(flavorValue))) {
                     flavorIterable.remove();
+                }else{
+                    flavor.setDishId(dishId);
+                    flavor.setIsDeleted(0);
                 }
             }
         }
-        // 保存口味
-        flavorService.updateBatchById(flavors);
 
-        // 保存菜品
+        // 删除之前的口味
+        LambdaQueryWrapper<Flavor> lambdaQueryWrapper = new LambdaQueryWrapper();
+        lambdaQueryWrapper.eq(Flavor::getDishId,dishId);
+        flavorService.remove(lambdaQueryWrapper);
+
+        // 保存口味
+        flavorService.saveBatch(flavors);
+
+        // 更新菜品
         Dish dish = new Dish();
         BeanUtils.copyProperties(dishVo, dish);
         updateById(dish);
