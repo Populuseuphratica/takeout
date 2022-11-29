@@ -43,6 +43,12 @@
             <version>3.4.3</version>
         </dependency>
 
+        <!--redis-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
         <!--lombok-->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -73,12 +79,6 @@
             <version>2.9.2</version>
         </dependency>
 
-        <!--   redis     -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
-
         <!--腾讯云cos-->
         <dependency>
             <groupId>com.qcloud</groupId>
@@ -90,6 +90,13 @@
                     <groupId>org.slf4j</groupId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.tencentcloudapi</groupId>
+            <artifactId>tencentcloud-sdk-java-sms</artifactId>
+            <version>3.1.633</version>
         </dependency>
 
         <!-- 配置提示 -->

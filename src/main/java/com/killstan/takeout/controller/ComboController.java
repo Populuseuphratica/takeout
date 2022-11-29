@@ -85,6 +85,11 @@ public class ComboController {
         return ResultVo.success(null);
     }
 
+    /**
+     * 删除套餐
+     * @param comboIds
+     * @return
+     */
     @DeleteMapping
     @Transactional(rollbackFor = Exception.class)
     public ResultVo deleteCombo(@RequestParam List<Long> comboIds) {
@@ -102,6 +107,13 @@ public class ComboController {
 
         return ResultVo.success(null);
     }
+
+    // TODO 修改套餐
+    // @GetMapping("{comboId}")
+    // public ResultVo getComboById(@PathVariable Long comboId){
+    //     Combo combo = comboService.getById(comboId);
+    //     return ResultVo.success(combo);
+    // }
 
 }
 

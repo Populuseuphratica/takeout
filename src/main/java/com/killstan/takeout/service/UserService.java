@@ -1,7 +1,11 @@
 package com.killstan.takeout.service;
 
-import com.killstan.takeout.entity.po.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.killstan.takeout.entity.po.User;
+import com.killstan.takeout.entity.vo.ResultVo;
+
+import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 /**
  * <p>
@@ -13,4 +17,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface UserService extends IService<User> {
 
+    ResultVo loginOrRegister(Map userInfoMap, HttpSession session);
 }

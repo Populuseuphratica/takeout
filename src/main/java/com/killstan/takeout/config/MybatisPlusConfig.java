@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import com.killstan.takeout.util.ThreadLocalForEmp;
+import com.killstan.takeout.util.ThreadLocalForId;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.context.annotation.Bean;
@@ -21,10 +21,11 @@ import java.time.LocalDateTime;
  */
 @Slf4j
 @Configuration
-public class MybatisPlusConfig{
+public class MybatisPlusConfig {
 
     /**
      * 添加分页插件
+     *
      * @return
      */
     @Bean
@@ -41,11 +42,12 @@ public class MybatisPlusConfig{
 
     /**
      * mybatis-plus 自动填充
+     *
      * @return
      */
     @Bean
-    public MetaObjectHandler myMetaObjectHandler(){
-        return new MetaObjectHandler(){
+    public MetaObjectHandler myMetaObjectHandler() {
+        return new MetaObjectHandler() {
             @Override
             public void insertFill(MetaObject metaObject) {
                 log.info("start insert fill ....");
@@ -53,19 +55,17 @@ public class MybatisPlusConfig{
                 LocalDateTime now = LocalDateTime.now();
                 // 如果字段存在，且有注解，则自动填充
                 this.strictInsertFill(metaObject, "createTime", LocalDateTime.class, now);
-                this.strictInsertFill(metaObject, "createId", Long.class, ThreadLocalForEmp.get());
-
-                // 一定存在的字段
-                metaObject.setValue("updateTime",now);
-                metaObject.setValue("updateId",ThreadLocalForEmp.get());
+                this.strictInsertFill(metaObject, "createId", Long.class, ThreadLocalForId.get());
+                this.strictInsertFill(metaObject, "updateTime", LocalDateTime.class, now);
+                this.strictInsertFill(metaObject, "updateId", Long.class, ThreadLocalForId.get());
 
             }
 
             @Override
             public void updateFill(MetaObject metaObject) {
                 log.info("start update fill ....");
-                metaObject.setValue("updateTime",LocalDateTime.now());
-                metaObject.setValue("updateId",ThreadLocalForEmp.get());
+                this.strictInsertFill(metaObject, "updateTime", LocalDateTime.class, LocalDateTime.now());
+                this.strictInsertFill(metaObject, "updateId", Long.class, ThreadLocalForId.get());
             }
         };
     }
