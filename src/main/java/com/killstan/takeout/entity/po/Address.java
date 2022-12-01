@@ -1,5 +1,9 @@
 package com.killstan.takeout.entity.po;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -17,10 +21,11 @@ import java.time.LocalDateTime;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value="Address对象", description="地址表")
+@ApiModel(value = "Address对象", description = "地址表")
 public class Address {
 
     @ApiModelProperty(value = "地址id")
+    @TableId(type = IdType.ASSIGN_ID)
     private Long addressId;
 
     @ApiModelProperty(value = "用户id")
@@ -63,6 +68,7 @@ public class Address {
     private Integer isDefault;
 
     @ApiModelProperty(value = "最后修正时间")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
     @ApiModelProperty(value = "是否删除 0：没删除；1：删除")

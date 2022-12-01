@@ -1,5 +1,6 @@
 package com.killstan.takeout.util.sms;
 
+import com.killstan.takeout.util.ConstantUtil;
 import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
 import com.tencentcloudapi.sms.v20210111.SmsClient;
@@ -52,7 +53,7 @@ public class SendSmsUtil {
         req.setTemplateId(smsProperty.getTemplateId());
 
         // 设置模版参数，验证码与限制时间（分钟）
-        String[] templateParamSet1 = {code, "5"};
+        String[] templateParamSet1 = {code, ConstantUtil.REDIS_CODE_TIME};
         req.setTemplateParamSet(templateParamSet1);
 
         // 返回的resp是一个SendSmsResponse的实例，与请求对象对应

@@ -1,16 +1,16 @@
 package com.killstan.takeout.entity.po;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author killStan
@@ -18,11 +18,9 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value="Order对象", description="")
-public class Order implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+@ApiModel(value = "Order对象", description = "")
+public class Order {
+    
     @ApiModelProperty(value = "订单号，雪花算法")
     private Long orderId;
 

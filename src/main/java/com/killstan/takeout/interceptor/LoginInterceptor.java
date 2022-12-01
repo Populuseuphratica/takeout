@@ -63,7 +63,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         ObjectMapper objectMapper = new ObjectMapper();
         // 如果未登录则返回未登录结果，通过输出流方式向客户端页面响应数据
-        response.getWriter().write(objectMapper.writeValueAsString(ResultVo.fail("NOT LOGIN")));
+        response.getWriter().write(objectMapper.writeValueAsString(ResultVo.fail("请登陆")));
         return false;
     }
 

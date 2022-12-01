@@ -15,6 +15,10 @@ public class ConstantUtil {
     public static final String REDIS_USER_PREFIX = "loginUser";
 
     // session 中存用户 id 的 key
+    public static final String REDIS_CODE_TIME = "5";
+
+    // session 中存用户 id 的 key
     public static final String SESSION_USER_ID = "loginUserId";
+
 
 }

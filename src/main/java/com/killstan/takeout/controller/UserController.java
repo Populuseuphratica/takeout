@@ -75,7 +75,7 @@ public class UserController {
         }
 
         // 将验证码存入 redis
-        // redisTemplate.opsForValue().set(phone, code, 5, TimeUnit.MINUTES);
+        // redisTemplate.opsForValue().set(phone, code, Long.parseLong(ConstantUtil.REDIS_CODE_TIME), TimeUnit.MINUTES);
         redisTemplate.opsForValue().set(phone, code);
         return ResultVo.success(null);
     }
