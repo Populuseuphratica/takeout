@@ -1,10 +1,19 @@
 package com.killstan.takeout.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.killstan.takeout.entity.po.ShoppingCart;
+import com.killstan.takeout.entity.vo.ShoppingCartVo;
 import com.killstan.takeout.mapper.po.ShoppingCartMapper;
 import com.killstan.takeout.service.ShoppingCartService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.killstan.takeout.util.ThreadLocalForId;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -17,4 +26,55 @@ import org.springframework.stereotype.Service;
 @Service
 public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, ShoppingCart> implements ShoppingCartService {
 
+    private final ShoppingCartMapper shoppingCartMapper;
+
+    @Autowired
+    public ShoppingCartServiceImpl(ShoppingCartMapper shoppingCartMapper) {
+        this.shoppingCartMapper = shoppingCartMapper;
+    }
+
+    /**
+     * @Description: 从数据库获取当前用户的购物车
+     * @Param: []
+     * @Return: java.util.List<com.killstan.takeout.entity.vo.ShoppingCartVo>
+     * 无数据返回空List
+     * @Author Kill_Stan
+     * @Date 2022/12/8 16:52
+     */
+    @Override
+    public List<ShoppingCartVo> listShoppingCart() {
+        // 用户id
+        long userId = ThreadLocalForId.get();
+        List<ShoppingCartVo> shoppingCartVos = shoppingCartMapper.listShoppingCartByUserId(userId);
+
+        // 无数据返回空List
+        return shoppingCartVos;
+    }
+
+    /**
+     * @Description: 添加购物车到数据库
+     * @Param: [shoppingCartVos] 如果是null或空，直接返回
+     * @Return: void
+     * @Author Kill_Stan
+     * @Date 2022/12/8 17:20
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void addShoppingCart(List<ShoppingCartVo> shoppingCartVos) {
+        if (shoppingCartVos == null || shoppingCartVos.size() == 0) {
+            return;
+        }
+
+        long userId = ThreadLocalForId.get();
+        List<ShoppingCart> shoppingCarts = new ArrayList<>();
+        for (ShoppingCartVo shoppingCartVo : shoppingCartVos) {
+            ShoppingCart shoppingCart = new ShoppingCart();
+            BeanUtils.copyProperties(shoppingCartVo, shoppingCart);
+            shoppingCarts.add(shoppingCart);
+        }
+        LambdaQueryWrapper<ShoppingCart> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(ShoppingCart::getUserId, userId);
+        remove(lambdaQueryWrapper);
+        saveBatch(shoppingCarts);
+    }
 }

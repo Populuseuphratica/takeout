@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.killstan.takeout.entity.vo.ResultVo;
 import com.killstan.takeout.util.ConstantUtil;
 import com.killstan.takeout.util.ThreadLocalForId;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 
 /**
  * @author Kill_Stan
@@ -23,6 +25,7 @@ import javax.servlet.http.HttpSession;
  * @date 2022/10/13 12:53
  */
 @Component
+@Slf4j
 public class LoginInterceptor implements HandlerInterceptor {
 
     private final RedisTemplate redisTemplate;
@@ -50,6 +53,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         HttpSession session = request.getSession();
         Long employeeId = (Long) session.getAttribute("employeeId");
         if (employeeId != null) {
+            log.info("后台账号：" + employeeId + "登陆，时间为：" + LocalDateTime.now());
             ThreadLocalForId.set(employeeId);
             return true;
         }
@@ -57,13 +61,16 @@ public class LoginInterceptor implements HandlerInterceptor {
         // 如果用户已登录，将 userId 信息存入 ThreadLocal，放行
         Long userId = (Long) session.getAttribute(ConstantUtil.SESSION_USER_ID);
         if (userId != null) {
+            log.info("前台账号：" + userId + "登陆，时间为：" + LocalDateTime.now());
             ThreadLocalForId.set(userId);
             return true;
         }
 
-        ObjectMapper objectMapper = new ObjectMapper();
+
         // 如果未登录则返回未登录结果，通过输出流方式向客户端页面响应数据
-        response.getWriter().write(objectMapper.writeValueAsString(ResultVo.fail("请登陆")));
+        ObjectMapper objectMapper = new ObjectMapper();
+        // 前端会判断返回，如果 msg 为 NOT_LOGIN，自动跳转登陆页面
+        response.getWriter().write(objectMapper.writeValueAsString(ResultVo.fail("NOT_LOGIN")));
         return false;
     }
 

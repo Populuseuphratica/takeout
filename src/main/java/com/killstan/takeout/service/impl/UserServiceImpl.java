@@ -51,7 +51,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
 
         // 验证码不匹配时，返回
-        String redisCode = (String) redisTemplate.opsForValue().get(phone);
+        String redisCode = (String) redisTemplate.opsForValue().get(ConstantUtil.REDIS_CODE_PREFIX + phone);
         if (redisCode == null || !code.equals(redisCode)) {
             return ResultVo.fail("验证码错误，请重新输入");
         }

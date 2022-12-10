@@ -1,16 +1,12 @@
-package com.killstan.takeout.entity.po;
+package com.killstan.takeout.entity.vo;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -22,11 +18,12 @@ import java.time.LocalDateTime;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "ShoppingCart对象", description = "购物车表")
-public class ShoppingCart {
+@ApiModel(value = "ShoppingCartVo对象", description = "前段用-用户购物车")
+public class ShoppingCartVo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "自增id，无实意")
-    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     @ApiModelProperty(value = "用户id")
@@ -35,8 +32,14 @@ public class ShoppingCart {
     @ApiModelProperty(value = "菜品id")
     private Long dishId;
 
+    @ApiModelProperty(value = "菜品名")
+    private String dishName;
+
     @ApiModelProperty(value = "套餐id")
     private Long comboId;
+
+    @ApiModelProperty(value = "套餐名")
+    private String comboName;
 
     @ApiModelProperty(value = "菜品口味")
     private String flavor;
@@ -47,9 +50,7 @@ public class ShoppingCart {
     @ApiModelProperty(value = "价格")
     private BigDecimal price;
 
-    @ApiModelProperty(value = "创建时间")
-    @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
-
+    @ApiModelProperty(value = "图片url")
+    private String imageUrl;
 
 }

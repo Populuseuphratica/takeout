@@ -22,7 +22,7 @@ import java.util.List;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value="Combo对象", description="套餐表")
+@ApiModel(value = "Combo对象", description = "前端用-套餐")
 public class ComboVo {
 
     @ApiModelProperty(value = "套餐id")
@@ -59,7 +59,6 @@ public class ComboVo {
     @ApiModelProperty(value = "最后修改人id")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateId;
-
 
 
 }

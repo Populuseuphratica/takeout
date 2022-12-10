@@ -1,6 +1,7 @@
 var web_prefix = '/front'
 
-function imgPath(path){
+// TODO 删除
+function imgPath(path) {
     return '/common/download?name=' + path
 }
 

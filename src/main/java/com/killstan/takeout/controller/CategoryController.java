@@ -40,12 +40,13 @@ public class CategoryController {
 
     /**
      * 获取分类列表
-     * @param page 当前页
+     *
+     * @param page     当前页
      * @param pageSize 页面大小
      * @return
      */
     @GetMapping("/page")
-    public ResultVo<IPage<Category>> listCategory(Integer page,Integer pageSize){
+    public ResultVo<IPage<Category>> listCategory(Integer page, Integer pageSize) {
         Page<Category> page1 = new Page<>();
         page1.addOrder(OrderItem.asc("sort"));
         IPage<Category> categoryPage = categoryService.page(page1);
@@ -55,22 +56,24 @@ public class CategoryController {
 
     /**
      * 添加分类
+     *
      * @param category
      * @return
      */
     @PostMapping
-    public ResultVo addCategory(@RequestBody Category category){
+    public ResultVo addCategory(@RequestBody Category category) {
         categoryService.save(category);
         return ResultVo.success(null);
     }
 
     /**
      * 修改分类
+     *
      * @param category
      * @return
      */
     @PutMapping
-    public ResultVo updateCategory(@RequestBody Category category){
+    public ResultVo updateCategory(@RequestBody Category category) {
         categoryService.updateById(category);
         return ResultVo.success(null);
     }
@@ -78,30 +81,31 @@ public class CategoryController {
     /**
      * 删除分类
      * 如果该分类下有菜品或套餐，则不删除
+     *
      * @param categoryId
      * @return
      */
     @DeleteMapping
-    public ResultVo deleteCategory(@RequestParam("id") Long categoryId){
+    public ResultVo deleteCategory(@RequestParam("id") Long categoryId) {
         LambdaQueryWrapper<Combo> comboQueryWrapper = new LambdaQueryWrapper();
-        comboQueryWrapper.eq(Combo::getCategoryId,categoryId);
+        comboQueryWrapper.eq(Combo::getCategoryId, categoryId);
         int comboCount = comboService.count(comboQueryWrapper);
 
-        if(comboCount > 0){
+        if (comboCount > 0) {
             return ResultVo.fail("该分类有绑定的套餐，无法删除");
         }
 
         LambdaQueryWrapper<Dish> dishQueryWrapper = new LambdaQueryWrapper();
-        dishQueryWrapper.eq(Dish::getCategoryId,categoryId);
+        dishQueryWrapper.eq(Dish::getCategoryId, categoryId);
         int dishCount = dishService.count(dishQueryWrapper);
 
-        if(dishCount > 0){
+        if (dishCount > 0) {
             return ResultVo.fail("该分类有绑定的菜品，无法删除");
         }
 
         boolean b = categoryService.removeById(categoryId);
 
-        if(b){
+        if (b) {
             return ResultVo.success(null);
         }
         return ResultVo.fail("删除失败，请刷新后重试");
@@ -109,13 +113,14 @@ public class CategoryController {
 
     /**
      * 根据分类类型获取分类
+     *
      * @param cgType
      * @return 分类list
      */
     @GetMapping("/list")
-    public ResultVo<List<Category>> getCategoryByType(Integer cgType){
+    public ResultVo<List<Category>> getCategoryByType(@RequestParam(value = "cgType", required = false) Integer cgType) {
         LambdaQueryWrapper<Category> lambdaQueryWrapper = new LambdaQueryWrapper();
-        lambdaQueryWrapper.eq(Category::getCgType,cgType);
+        lambdaQueryWrapper.eq(cgType != null, Category::getCgType, cgType);
         lambdaQueryWrapper.orderByAsc(Category::getSort);
         List<Category> list = categoryService.list(lambdaQueryWrapper);
         return ResultVo.success(list);

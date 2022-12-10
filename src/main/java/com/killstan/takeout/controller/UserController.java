@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 /**
@@ -29,14 +30,18 @@ import java.util.regex.Pattern;
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    private final RedisTemplate redisTemplate;
+
+    private final SendSmsUtil sendSmsUtil;
 
     @Autowired
-    private RedisTemplate redisTemplate;
-
-    @Autowired
-    private SendSmsUtil sendSmsUtil;
+    public UserController(UserService userService, RedisTemplate redisTemplate, SendSmsUtil sendSmsUtil) {
+        this.userService = userService;
+        this.redisTemplate = redisTemplate;
+        this.sendSmsUtil = sendSmsUtil;
+    }
 
     /**
      * @Description: 登陆或者注册用户
@@ -75,8 +80,8 @@ public class UserController {
         }
 
         // 将验证码存入 redis
-        // redisTemplate.opsForValue().set(phone, code, Long.parseLong(ConstantUtil.REDIS_CODE_TIME), TimeUnit.MINUTES);
-        redisTemplate.opsForValue().set(phone, code);
+        redisTemplate.opsForValue().set(ConstantUtil.REDIS_CODE_PREFIX + phone, code, Long.parseLong(ConstantUtil.REDIS_CODE_TIME), TimeUnit.MINUTES);
+
         return ResultVo.success(null);
     }
 

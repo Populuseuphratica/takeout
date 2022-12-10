@@ -1,6 +1,7 @@
 package com.killstan.takeout.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.killstan.takeout.entity.po.Combo;
@@ -59,7 +60,6 @@ public class ComboController {
     }
 
     /**
-     *
      * @param status
      * @param comboIds
      * @return
@@ -75,7 +75,7 @@ public class ComboController {
         LambdaUpdateWrapper<Combo> lambdaUpdateWrapper = new LambdaUpdateWrapper();
         comboIds.forEach(comboId -> {
             if (!"".equals(comboId)) {
-                lambdaUpdateWrapper.eq(Combo::getComboId,comboId);
+                lambdaUpdateWrapper.eq(Combo::getComboId, comboId);
                 lambdaUpdateWrapper.set(Combo::getStatus, status);
                 comboService.update(lambdaUpdateWrapper);
                 lambdaUpdateWrapper.clear();
@@ -87,6 +87,7 @@ public class ComboController {
 
     /**
      * 删除套餐
+     *
      * @param comboIds
      * @return
      */
@@ -98,7 +99,7 @@ public class ComboController {
         LambdaUpdateWrapper<Combo> lambdaUpdateWrapper = new LambdaUpdateWrapper();
         comboIds.forEach(comboId -> {
             if (!"".equals(comboId)) {
-                lambdaUpdateWrapper.eq(Combo::getComboId,comboId);
+                lambdaUpdateWrapper.eq(Combo::getComboId, comboId);
                 lambdaUpdateWrapper.set(Combo::getIsDeleted, 1);
                 comboService.update(lambdaUpdateWrapper);
                 lambdaUpdateWrapper.clear();
@@ -114,6 +115,24 @@ public class ComboController {
     //     Combo combo = comboService.getById(comboId);
     //     return ResultVo.success(combo);
     // }
+
+    /**
+     * @Description: 根据分类 id 获取套餐
+     * @Param: [categoryId, status]
+     * @Return: com.killstan.takeout.entity.vo.ResultVo
+     * @Author Kill_Stan
+     * @Date 2022/12/5 21:31
+     */
+    @GetMapping("/list")
+    public ResultVo getComboByCategoryId(Long categoryId, Integer status) {
+
+        LambdaQueryWrapper<Combo> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(Combo::getCategoryId, categoryId)
+                .eq(Combo::getStatus, status)
+                .eq(Combo::getIsDeleted, 0);
+        List<Combo> combos = comboService.list(lambdaQueryWrapper);
+        return ResultVo.success(combos);
+    }
 
 }
 

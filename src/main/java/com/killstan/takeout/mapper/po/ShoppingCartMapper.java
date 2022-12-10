@@ -1,7 +1,10 @@
 package com.killstan.takeout.mapper.po;
 
-import com.killstan.takeout.entity.po.ShoppingCart;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.killstan.takeout.entity.po.ShoppingCart;
+import com.killstan.takeout.entity.vo.ShoppingCartVo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface ShoppingCartMapper extends BaseMapper<ShoppingCart> {
 
+    List<ShoppingCartVo> listShoppingCartByUserId(long userId);
 }

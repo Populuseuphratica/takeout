@@ -2,4 +2,25 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.killstan.takeout.mapper.po.ShoppingCartMapper">
 
+    <select id="listShoppingCartByUserId" resultType="com.killstan.takeout.entity.vo.ShoppingCartVo">
+        SELECT sc.id,
+               sc.user_id,
+               sc.dish_id,
+               d.dish_name,
+               sc.combo_id,
+               c.combo_name,
+               sc.flavor,
+               sc.count,
+               sc.price,
+               CASE
+                   WHEN sc.dish_id IS NULL THEN
+                       c.image_url
+                   ELSE d.image_url
+                   END AS 'image_url'
+        FROM shopping_cart sc
+                 LEFT JOIN dish d ON sc.dish_id = d.dish_id
+                 LEFT JOIN combo c ON c.combo_id = sc.combo_id
+        WHERE sc.user_id = #{userId}
+        ORDER BY sc.create_time DESC
+    </select>
 </mapper>

@@ -16,8 +16,12 @@ import org.springframework.util.StringUtils;
 @Component
 public class SendSmsUtil {
 
+    private final SmsProperty smsProperty;
+
     @Autowired
-    private SmsProperty smsProperty;
+    public SendSmsUtil(SmsProperty smsProperty) {
+        this.smsProperty = smsProperty;
+    }
 
     public boolean send(String phone, String code) {
         //判断手机是否为null

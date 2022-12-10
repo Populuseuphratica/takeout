@@ -1,17 +1,12 @@
 package com.killstan.takeout.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.killstan.takeout.entity.po.Dish;
 import com.killstan.takeout.entity.vo.DishVo;
 import com.killstan.takeout.entity.vo.ResultVo;
 import com.killstan.takeout.service.DishService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -90,28 +85,14 @@ public class DishController {
      *
      * @param categoryId 分类id
      * @param dishName   菜品名
+     * @param status     菜品状态（表明是否由用户端菜品页面传来请求）
      * @return
      */
     @GetMapping("list")
-    public ResultVo<List<DishVo>> getDishByCategoryId(@RequestParam(name = "categoryId", required = false) Long categoryId, @RequestParam(name = "dishName", required = false) String dishName) {
+    public ResultVo<List<DishVo>> getDishByCategoryId(@RequestParam(name = "categoryId", required = false) Long categoryId, @RequestParam(name = "dishName", required = false) String dishName, @RequestParam(name = "status", required = false) Integer status) {
 
-        LambdaQueryWrapper<Dish> lambdaQueryWrapper = new LambdaQueryWrapper();
-        lambdaQueryWrapper.eq(categoryId != null, Dish::getCategoryId, categoryId)
-                .eq(StringUtils.hasLength(dishName), Dish::getDishName, dishName)
-                .eq(Dish::getIsDeleted, 0)
-                .eq(Dish::getStatus, 1)
-                .orderByAsc(Dish::getSort)
-                .orderByDesc(Dish::getUpdateTime);
-
-        List<Dish> list = dishService.list(lambdaQueryWrapper);
-        List<DishVo> voList = new ArrayList<>();
-        for (Dish dish : list) {
-            DishVo dishVo = new DishVo();
-            BeanUtils.copyProperties(dish, dishVo);
-            voList.add(dishVo);
-        }
-
-        return ResultVo.success(voList);
+        ResultVo<List<DishVo>> dishByCategoryId = dishService.getDishByCategoryId(categoryId, dishName, status);
+        return dishByCategoryId;
     }
 
 

@@ -22,7 +22,7 @@ import java.util.List;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value="Dish对象", description="菜品")
+@ApiModel(value = "Dish对象", description = "前端用-菜品")
 public class DishVo {
 
     @ApiModelProperty(value = "菜品id")
