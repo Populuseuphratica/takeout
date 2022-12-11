@@ -14,8 +14,11 @@ public class ConstantUtil {
     // redis 中存用户信息的 key 前缀
     public static final String REDIS_USER_PREFIX = "loginUser";
 
-    // redis 中，手机登陆验证码的有效时间
+    // redis 中，手机登陆验证码的有效时间(请设置单位为分钟)
     public static final String REDIS_CODE_TIME = "5";
+
+    // redis 中，各种数据的有效时间(请设置单位为天)
+    public static final String REDIS_DATA_TIME = "1";
 
     // redis 中，手机登陆验证码的 key 前缀
     public static final String REDIS_CODE_PREFIX = "PHONE_CODE_";

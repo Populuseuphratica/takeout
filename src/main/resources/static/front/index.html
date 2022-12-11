@@ -292,7 +292,7 @@
             goodsPrice() {
                 let price = 0
                 this.cartData.forEach(item => {
-                    price += (item.count * item.amount)
+                    price += (item.count * item.price)
                 })
                 return price
             }
@@ -411,7 +411,8 @@
                     comboId: item.comboId,//套餐id
                     dishName: item.dishName, //菜品名或套餐名
                     comboName: item.comboName, //菜品名或套餐名
-                    imageUrl: item.imageUrl //菜品图片
+                    imageUrl: item.imageUrl, //菜品图片
+                    count: item.count //菜品数量
                 }
                 const res = await addCartApi(params)
                 if (res.code === 1) {
