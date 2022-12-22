@@ -1,4 +1,4 @@
-package com.killstan.takeout.cos;
+package com.killstan.takeout.util.cos;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,6 +14,7 @@ public abstract class BaseObjectStorage {
 
     /**
      * 上传文件
+     *
      * @param multipartFile
      * @return 文件url
      */

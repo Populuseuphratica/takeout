@@ -473,10 +473,12 @@
                     comboId: item.comboId,//套餐id
                     dishName: item.dishName,
                     comboName: item.comboName,
-                    imageUrl: item.imageUrl
+                    imageUrl: item.imageUrl,
+                    count: 1
                 }
                 const res = await addCartApi(params)
                 if (res.code === 1) {
+                    // 为菜品展示页面的菜品数量赋值
                     this.dishList.forEach(dish => {
                         if (dish.dishId === (item.dishId || item.comboId)) {
                             dish.count = res.data.count
@@ -577,7 +579,8 @@
                         dishId: dialogFlavor.dishId,
                         flavors: [],
                         imageUrl: dialogFlavor.imageUrl,
-                        dishName: dialogFlavor.dishName
+                        dishName: dialogFlavor.dishName,
+                        count: 1
                     })
                     this.dialogFlavor.show = false
                 }

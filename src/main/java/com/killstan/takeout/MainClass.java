@@ -4,6 +4,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @MapperScan("com.killstan.takeout.mapper")
 @EnableTransactionManagement
+@EnableScheduling   // 开启定时任务
 public class MainClass {
     public static void main(String[] args) {
         ConfigurableApplicationContext run = SpringApplication.run(MainClass.class, args);

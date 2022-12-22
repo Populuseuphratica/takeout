@@ -1,4 +1,4 @@
-package com.killstan.takeout.cos;
+package com.killstan.takeout.util.cos;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

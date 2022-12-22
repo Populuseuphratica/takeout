@@ -1,4 +1,4 @@
-package com.killstan.takeout.cos;
+package com.killstan.takeout.util.cos;
 
 
 import com.qcloud.cos.COSClient;
@@ -44,17 +44,17 @@ public class CosObjectStorage extends BaseObjectStorage {
     @Override
     public String upload(MultipartFile multipartFile) {
         COSClient cosClient = init();
-        String newFileName = cosInfo.getRootDirectory() + UUID.randomUUID()+multipartFile.getOriginalFilename();
+        String newFileName = cosInfo.getRootDirectory() + UUID.randomUUID() + multipartFile.getOriginalFilename();
         try {
-            File image = File.createTempFile("temp",null);
+            File image = File.createTempFile("temp", null);
             multipartFile.transferTo(image);
 
             // 存入文件
-            PutObjectRequest putObjectRequest = new PutObjectRequest(cosInfo.getBucketName(), newFileName , image);
+            PutObjectRequest putObjectRequest = new PutObjectRequest(cosInfo.getBucketName(), newFileName, image);
             cosClient.putObject(putObjectRequest);
 
             // 返回文件url
-            return cosInfo.getPath()+ newFileName;
+            return cosInfo.getPath() + newFileName;
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
