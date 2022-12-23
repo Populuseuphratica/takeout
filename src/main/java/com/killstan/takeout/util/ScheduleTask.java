@@ -68,7 +68,9 @@ public class ScheduleTask {
             LambdaQueryWrapper<ShoppingCart> lambdaQueryWrapper = new LambdaQueryWrapper<>();
             lambdaQueryWrapper.eq(ShoppingCart::getUserId, userId);
             shoppingCartService.remove(lambdaQueryWrapper);
-            shoppingCartService.saveBatch(shoppingCartList);
+            if (shoppingCartList.size() > 0) {
+                shoppingCartService.saveBatch(shoppingCartList);
+            }
             // 数据库中更新完成后redis中不用删除，等待其过期
         }
     }

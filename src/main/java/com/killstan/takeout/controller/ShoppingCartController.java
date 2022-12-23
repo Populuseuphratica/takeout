@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -44,7 +45,7 @@ public class ShoppingCartController {
      * @Date 2022/12/10 21:12
      */
     @GetMapping("/list")
-    public ResultVo listShoppingCart() {
+    public ResultVo<List<ShoppingCartVo>> listShoppingCart() {
 
         List<ShoppingCartVo> shoppingCartVos = getShoppingCartList();
 
@@ -67,39 +68,36 @@ public class ShoppingCartController {
         Integer count = shoppingCartVo.getCount();
         if (count == null) {
             count = 1;
-            shoppingCartVo.setCount(count);
-        }
-
-        // 取得其套餐/菜品id
-        long addId = shoppingCartVo.getComboId() == null ? shoppingCartVo.getDishId() : shoppingCartVo.getComboId();
-        boolean added = false;
-        // 如果时购物车中有的菜品/套餐，增加其数量
-        for (ShoppingCartVo cartVo : shoppingCartVos) {
-            long id = cartVo.getComboId() == null ? cartVo.getDishId() : cartVo.getComboId();
-            if (addId == id) {
-                Integer voCount = cartVo.getCount();
-                cartVo.setCount(voCount + count);
-                added = true;
-            }
         }
 
         // 用户id
         long userId = ThreadLocalForId.get();
-        // 如果是购物车中没有的菜品，添加
-        if (!added) {
-            shoppingCartVo.setUserId(userId);
-            // 将购物车信息加入 redis 中
-            shoppingCartVos.add(shoppingCartVo);
+        shoppingCartVo.setUserId(userId);
+
+        // 取得其套餐/菜品id
+        long addId = shoppingCartVo.getComboId() == null ? shoppingCartVo.getDishId() : shoppingCartVo.getComboId();
+
+        // 如果时购物车中有的菜品/套餐，增加其数量后替换（防止菜品有修正）
+        Iterator<ShoppingCartVo> iterator = shoppingCartVos.iterator();
+        while (iterator.hasNext()) {
+            ShoppingCartVo cartVo = iterator.next();
+            long id = cartVo.getComboId() == null ? cartVo.getDishId() : cartVo.getComboId();
+
+            if (addId == id) {
+                int voCount = cartVo.getCount() + count;
+                shoppingCartVo.setCount(voCount);
+                iterator.remove();
+                break;
+            }
         }
+        shoppingCartVos.add(shoppingCartVo);
 
         // 向 redis 中存入用户购物车
         String redisShoppingCart = ConstantUtil.REDIS_SHOP_CART + userId;
         redisTemplate.opsForValue().set(redisShoppingCart, shoppingCartVos, Long.parseLong(ConstantUtil.REDIS_DATA_TIME), TimeUnit.DAYS);
-        redisTemplate.opsForSet().add(ConstantUtil.REDIS_SHOP_CART_SET, userId);
-        // TODO 现阶段测试用，以后删除
-        shoppingCartService.addShoppingCart(shoppingCartVos);
+        redisTemplate.opsForSet().add(ConstantUtil.REDIS_SHOP_CART_SET, userId, Long.parseLong(ConstantUtil.REDIS_DATA_TIME), TimeUnit.DAYS);
 
-        return ResultVo.success(null);
+        return ResultVo.success(shoppingCartVo);
     }
 
     /**
@@ -123,7 +121,7 @@ public class ShoppingCartController {
             long id = cartVo.getComboId() == null ? cartVo.getDishId() : cartVo.getComboId();
             // 找到购物车中对应菜品
             if (subId == id) {
-                Integer voCount = cartVo.getCount() - 1;
+                int voCount = cartVo.getCount() - 1;
                 // 如果删除的是最后一件，将其从购物车中删除
                 if (voCount <= 0) {
                     iterator.remove();
@@ -146,8 +144,21 @@ public class ShoppingCartController {
         return ResultVo.success(null);
     }
 
-    private void addCartToRedis(List<ShoppingCartVo> shoppingCartVoList) {
-
+    /**
+     * @Description: 清空购物车
+     * @Param: []
+     * @Return: com.killstan.takeout.entity.vo.ResultVo
+     * @Author Kill_Stan
+     * @Date 2022/12/23 21:47
+     */
+    @DeleteMapping("/clean")
+    public ResultVo cleanShoppingCart() {
+        // 用户id
+        long userId = ThreadLocalForId.get();
+        // redis 中用户购物车的 key
+        String redisShoppingCart = ConstantUtil.REDIS_SHOP_CART + userId;
+        redisTemplate.opsForValue().set(redisShoppingCart, new ArrayList<ShoppingCartVo>());
+        return ResultVo.success(null);
     }
 
     /**
@@ -175,6 +186,5 @@ public class ShoppingCartController {
 
         return shoppingCartVos;
     }
-
 }
 
