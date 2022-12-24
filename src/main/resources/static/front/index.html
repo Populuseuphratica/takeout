@@ -161,12 +161,12 @@
                 v-if="detailsDialog.show"
     >
         <div class="divContainer">
-            <el-image :src="imgPathConvert(detailsDialog.item.image)">
+            <el-image :src="detailsDialog.item.imageUrl">
                 <div slot="error" class="image-slot">
                     <img src="./images/noImg.png"/>
                 </div>
             </el-image>
-            <div class="title">{{detailsDialog.item.name}}</div>
+            <div class="title">{{detailsDialog.item.dishName}}</div>
             <div class="content">{{detailsDialog.item.description}}</div>
         </div>
         <div class="divNum">
@@ -177,7 +177,7 @@
                 <div class="divSubtract" v-if="detailsDialog.item.count > 0">
                     <img src="./images/subtract.png" @click="subtractCart(detailsDialog.item)"/>
                 </div>
-                <div class="divDishNum">{{detailsDialog.item.number}}</div>
+                <div class="divDishNum">{{detailsDialog.item.count}}</div>
                 <div class="divTypes"
                      v-if="detailsDialog.item.flavors && detailsDialog.item.flavors.length > 0 && !detailsDialog.item.number "
                      @click="chooseFlavorClick(detailsDialog.item)">选择规格
@@ -194,18 +194,18 @@
     <van-dialog v-model="comboDialog.show"
                 :show-confirm-button="false"
                 class="comboDetailsDialog"
-                ref="comboDetailsDialogd"
+                ref="comboDetailsDialog"
                 v-if="comboDialog.show"
     >
         <div class="divContainer">
-            <div class="title">{{comboDialog.item.name}}</div>
+            <div class="title">{{comboDialog.item.comboName}}</div>
             <div class="item" v-for="(item,index) in comboDialog.item.list" :key="index">
                 <el-image :src="item.imageUrl">
                     <div slot="error" class="image-slot">
                         <img src="./images/noImg.png"/>
                     </div>
                 </el-image>
-                <div class="divSubTitle">{{item.name + '(' + item.copies + '份)' }}
+                <div class="divSubTitle">{{item.dishName + '(' + item.count + '份)' }}
                     <div class="divPrice">
                         <span>￥</span><span>{{item.price/100}}</span>
                     </div>
@@ -221,7 +221,7 @@
                 <div class="divSubtract" v-if="comboDialog.item.number > 0">
                     <img src="./images/subtract.png" @click="subtractCart(comboDialog.item)"/>
                 </div>
-                <div class="divDishNum">{{comboDialog.item.number}}</div>
+                <div class="divDishNum">{{comboDialog.item.count}}</div>
                 <div class="divAdd" v-if="comboDialog.item.number">
                     <img src="./images/add.png" @click="addCart(comboDialog.item)"/>
                 </div>
@@ -412,13 +412,15 @@
                     dishName: item.dishName, //菜品名或套餐名
                     comboName: item.comboName, //菜品名或套餐名
                     imageUrl: item.imageUrl, //菜品图片
-                    count: item.count //菜品数量
+                    count: 1 //菜品数量
                 }
                 const res = await addCartApi(params)
                 if (res.code === 1) {
                     this.dishList.forEach(dish => {
-                        // 如果购物车中存在菜品或者套餐，更新其count（只和前端数据有关）
-                        if (dish.dishId === item.dishId || dish.comboId === item.comboId) {
+                        // 如果购物车中存在菜品或者套餐，更新其在菜单中的count（只和前端数据有关）
+                        if (dish.dishId !== undefined && dish.dishId === item.dishId) {
+                            dish.count = res.data.count
+                        } else if (dish.comboId !== undefined && dish.comboId === item.comboId) {
                             dish.count = res.data.count
                         }
                     })
@@ -435,18 +437,17 @@
             //菜单中减少选中的商品
             async subtractCart(item) {
                 let params = {
-                    dishId: item.id,
-                }
-                if (!Array.isArray(item.flavors)) {
-                    params = {
-                        comboId: item.id,
-                    }
+                    dishId: item.dishId,
+                    comboId: item.comboId,
                 }
                 const res = await updateCartApi(params)
                 if (res.code === 1) {
                     this.dishList.forEach(dish => {
-                        if (dish.id === item.id) {
-                            dish.count = (res.data.count === 0 ? undefined : res.data.count)
+                        // 如果购物车中存在菜品或者套餐，更新其在菜单中的count（只和前端数据有关）
+                        if (dish.dishId !== undefined && dish.dishId === item.dishId) {
+                            dish.count = res.data.count
+                        } else if (dish.comboId !== undefined && dish.comboId === item.comboId) {
+                            dish.count = res.data.count
                         }
                     })
                     if (this.comboDialog.show) {
@@ -480,7 +481,10 @@
                 if (res.code === 1) {
                     // 为菜品展示页面的菜品数量赋值
                     this.dishList.forEach(dish => {
-                        if (dish.dishId === (item.dishId || item.comboId)) {
+                        // 如果购物车中存在菜品或者套餐，更新其在菜单中的count（只和前端数据有关）
+                        if (dish.dishId !== undefined && dish.dishId === item.dishId) {
+                            dish.count = res.data.count
+                        } else if (dish.comboId !== undefined && dish.comboId === item.comboId) {
                             dish.count = res.data.count
                         }
                     })
@@ -499,8 +503,11 @@
                 const res = await updateCartApi(params)
                 if (res.code === 1) {
                     this.dishList.forEach(dish => {
-                        if (dish.dishId === (item.dishId || item.comboId)) {
-                            dish.count = (res.data.count === 0 ? undefined : res.data.count)
+                        // 如果购物车中存在菜品或者套餐，更新其在菜单中的count（只和前端数据有关）
+                        if (dish.dishId !== undefined && dish.dishId === item.dishId) {
+                            dish.count = res.data.count
+                        } else if (dish.comboId !== undefined && dish.comboId === item.comboId) {
+                            dish.count = res.data.count
                         }
                     })
                     this.getCartData()
@@ -603,12 +610,12 @@
                 //先清除对象数据，如果不行的话dialog使用v-if
                 this.detailsDialog.item = {}
                 this.comboDialog.item = {}
-                if (Array.isArray(item.flavors)) {
+                if (item.dishId) {
                     this.detailsDialog.item = item
                     this.detailsDialog.show = true
                 } else {
                     //显示套餐的数据
-                    const res = await comboDishDetailsApi(item.id)
+                    const res = await comboDishDetailsApi(item.comboId)
                     if (res.code === 1) {
                         this.comboDialog.item = {...item, list: res.data}
                         this.comboDialog.show = true
