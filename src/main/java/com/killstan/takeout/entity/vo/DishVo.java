@@ -38,6 +38,9 @@ public class DishVo {
     @ApiModelProperty(value = "分类名")
     private String categoryName;
 
+    @ApiModelProperty(value = "菜品数量")
+    private Integer count;
+
     @ApiModelProperty(value = "菜品价格")
     private BigDecimal price;
 

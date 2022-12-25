@@ -134,5 +134,19 @@ public class ComboController {
         return ResultVo.success(combos);
     }
 
+    /**
+     * @Description: 获取套餐内的菜品
+     * @Param: [comboId]
+     * @Return: com.killstan.takeout.entity.vo.ResultVo
+     * @Author Kill_Stan
+     * @Date 2022/12/25 15:51
+     */
+    @GetMapping("/dish/{comboId}")
+    public ResultVo getDishByComboId(@PathVariable Long comboId) {
+
+        ResultVo dishByComboId = comboService.getDishByComboId(comboId);
+        return dishByComboId;
+    }
+
 }
 

@@ -179,7 +179,7 @@
                 </div>
                 <div class="divDishNum">{{detailsDialog.item.count}}</div>
                 <div class="divTypes"
-                     v-if="detailsDialog.item.flavors && detailsDialog.item.flavors.length > 0 && !detailsDialog.item.number "
+                     v-if="detailsDialog.item.flavors && detailsDialog.item.flavors.length > 0 && !detailsDialog.item.count "
                      @click="chooseFlavorClick(detailsDialog.item)">选择规格
                 </div>
                 <div class="divAdd" v-else>
@@ -199,7 +199,7 @@
     >
         <div class="divContainer">
             <div class="title">{{comboDialog.item.comboName}}</div>
-            <div class="item" v-for="(item,index) in comboDialog.item.list" :key="index">
+            <div class="item" v-for="(item,index) in comboDialog.item.dishList" :key="index">
                 <el-image :src="item.imageUrl">
                     <div slot="error" class="image-slot">
                         <img src="./images/noImg.png"/>
@@ -218,14 +218,14 @@
                 <span>￥</span><span>{{comboDialog.item.price/100}}</span>
             </div>
             <div class="right">
-                <div class="divSubtract" v-if="comboDialog.item.number > 0">
+                <div class="divSubtract" v-if="comboDialog.item.count > 0">
                     <img src="./images/subtract.png" @click="subtractCart(comboDialog.item)"/>
                 </div>
                 <div class="divDishNum">{{comboDialog.item.count}}</div>
-                <div class="divAdd" v-if="comboDialog.item.number">
+                <div class="divAdd" v-if="comboDialog.item.count">
                     <img src="./images/add.png" @click="addCart(comboDialog.item)"/>
                 </div>
-                <div class="addCart" @click="addCart(comboDialog.item)" v-if="!comboDialog.item.number">加入购物车</div>
+                <div class="addCart" @click="addCart(comboDialog.item)" v-if="!comboDialog.item.count">加入购物车</div>
             </div>
         </div>
         <div class="detailsDialogClose" @click="comboDialog.show = false">
@@ -617,7 +617,8 @@
                     //显示套餐的数据
                     const res = await comboDishDetailsApi(item.comboId)
                     if (res.code === 1) {
-                        this.comboDialog.item = {...item, list: res.data}
+                        // this.comboDialog.item = {...item, list: res.data}
+                        this.comboDialog.item = res.data
                         this.comboDialog.show = true
                     } else {
                         this.$notify({type: 'warning', message: res.msg});

@@ -18,8 +18,9 @@ public interface ComboService extends IService<Combo> {
 
     /**
      * 获取套餐列表
-     * @param page 当前页
-     * @param pageSize 页面大小
+     *
+     * @param page      当前页
+     * @param pageSize  页面大小
      * @param comboName 套餐名，可为空
      * @return
      */
@@ -27,8 +28,11 @@ public interface ComboService extends IService<Combo> {
 
     /**
      * 添加套餐
+     *
      * @param comboVo
      * @return
      */
     ResultVo addCombo(ComboVo comboVo);
+
+    ResultVo getDishByComboId(Long comboId);
 }

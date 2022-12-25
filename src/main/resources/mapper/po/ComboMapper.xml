@@ -2,14 +2,49 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.killstan.takeout.mapper.po.ComboMapper">
 
+    <resultMap id="comboDishVo" type="com.killstan.takeout.entity.vo.ComboDishVo">
+        <id property="comboId" column="combo_id"/>
+        <result property="comboName" column="combo_name"/>
+        <result property="price" column="combo_price"/>
+        <collection property="dishList" ofType="com.killstan.takeout.entity.vo.DishVo" javaType="java.util.ArrayList">
+            <id property="dishId" column="dish_id"/>
+            <result property="dishName" column="dish_name"/>
+            <result property="count" column="count"/>
+            <result property="price" column="dish_price"/>
+            <result property="imageUrl" column="image_url"/>
+            <result property="description" column="description"/>
+        </collection>
+    </resultMap>
+
+    <select id="getDishByComboId" resultMap="comboDishVo">
+        SELECT c.combo_id,
+               c.combo_name,
+               c.price combo_price,
+               d.dish_id,
+               d.dish_name,
+               cd.count,
+               d.price dish_price,
+               d.image_url,
+               d.description
+        FROM combo c
+                 LEFT JOIN combo_dish cd ON c.combo_id = cd.combo_id
+                 LEFT JOIN dish d ON cd.dish_id = d.dish_id
+        WHERE c.combo_id = #{comboId}
+          AND c.`status` = 1
+          AND d.is_deleted = 0
+          AND d.`status` = 1
+        ORDER BY d.sort
+    </select>
+
     <select id="listCombo" resultType="com.killstan.takeout.entity.vo.ComboVo">
-        SELECT c.combo_id,c.combo_name,ca.category_name,c.price,c.code,c.image_url,c.description,c.status,c.update_time,c.update_id,c.is_deleted
+        SELECT
+        c.combo_id,c.combo_name,ca.category_name,c.price,c.code,c.image_url,c.description,c.status,c.update_time,c.update_id,c.is_deleted
         FROM combo c
         LEFT JOIN category ca
         ON c.category_id = ca.category_id
         WHERE c.is_deleted = 0
         <if test="comboName != null and comboName != ''">
-            AND c.combo_name like  CONCAT('%',#{comboName},'%')
+            AND c.combo_name like CONCAT('%',#{comboName},'%')
         </if>
     </select>
 </mapper>

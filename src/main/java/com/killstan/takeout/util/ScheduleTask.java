@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.killstan.takeout.entity.po.ShoppingCart;
 import com.killstan.takeout.entity.vo.ShoppingCartVo;
 import com.killstan.takeout.service.ShoppingCartService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,7 @@ import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +24,7 @@ import java.util.List;
  * @Version: v1.0
  */
 @Configuration
+@Slf4j
 public class ScheduleTask {
 
     private final RedisTemplate redisTemplate;
@@ -67,6 +70,8 @@ public class ScheduleTask {
             }
             LambdaQueryWrapper<ShoppingCart> lambdaQueryWrapper = new LambdaQueryWrapper<>();
             lambdaQueryWrapper.eq(ShoppingCart::getUserId, userId);
+            LocalDateTime localDateTime = LocalDateTime.now();
+            log.info(localDateTime + "----------更新用户" + userId + "购物车");
             shoppingCartService.remove(lambdaQueryWrapper);
             if (shoppingCartList.size() > 0) {
                 shoppingCartService.saveBatch(shoppingCartList);
