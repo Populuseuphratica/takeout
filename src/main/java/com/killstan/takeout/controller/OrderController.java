@@ -1,14 +1,12 @@
 package com.killstan.takeout.controller;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.killstan.takeout.entity.vo.OrderVo;
 import com.killstan.takeout.entity.vo.ResultVo;
 import com.killstan.takeout.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -40,6 +38,13 @@ public class OrderController {
     public ResultVo submit(@RequestBody OrderVo orderVo) {
         ResultVo resultVo = orderService.submitOrder(orderVo);
         return resultVo;
+    }
+
+    @GetMapping("/userPage")
+    public ResultVo getUserOrder(Integer page, Integer pageSize) {
+        IPage userOrders = orderService.getUserOrders(page, pageSize);
+        return ResultVo.success(userOrders);
+
     }
 
 }

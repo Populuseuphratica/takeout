@@ -1,5 +1,6 @@
 package com.killstan.takeout.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.killstan.takeout.entity.po.Orders;
 import com.killstan.takeout.entity.vo.OrderVo;
@@ -18,4 +19,6 @@ public interface OrderService extends IService<Orders> {
 
     @Transactional(rollbackFor = Exception.class)
     ResultVo submitOrder(OrderVo orderVo);
+
+    IPage getUserOrders(Integer page, Integer pageSize);
 }

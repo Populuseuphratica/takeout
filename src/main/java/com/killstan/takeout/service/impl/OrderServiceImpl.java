@@ -1,11 +1,14 @@
 package com.killstan.takeout.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.killstan.takeout.entity.po.Address;
 import com.killstan.takeout.entity.po.OrderDetail;
 import com.killstan.takeout.entity.po.Orders;
 import com.killstan.takeout.entity.vo.OrderVo;
+import com.killstan.takeout.entity.vo.OrdersVo;
 import com.killstan.takeout.entity.vo.ResultVo;
 import com.killstan.takeout.entity.vo.ShoppingCartVo;
 import com.killstan.takeout.mapper.po.OrderMapper;
@@ -46,12 +49,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
 
     private final ShoppingCartService shoppingCartService;
 
+    private final OrderMapper orderMapper;
+
     @Autowired
-    public OrderServiceImpl(RedisTemplate redisTemplate, AddressService addressService, OrderDetailService orderDetailService, ShoppingCartService shoppingCartService) {
+    public OrderServiceImpl(RedisTemplate redisTemplate, AddressService addressService, OrderDetailService orderDetailService, ShoppingCartService shoppingCartService, OrderMapper orderMapper) {
         this.redisTemplate = redisTemplate;
         this.addressService = addressService;
         this.orderDetailService = orderDetailService;
         this.shoppingCartService = shoppingCartService;
+        this.orderMapper = orderMapper;
     }
 
     /**
@@ -136,5 +142,21 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
         shoppingCartService.deleteUserShoppingCart();
 
         return ResultVo.success(null);
+    }
+
+    /**
+     * @Description: 获取用户历史订单，分页
+     * @Param: [page, pageSize]
+     * @Return: com.baomidou.mybatisplus.core.metadata.IPage
+     * @Author Kill_Stan
+     * @Date 2022/12/27 22:08
+     */
+    @Override
+    public IPage getUserOrders(Integer page, Integer pageSize) {
+
+        Page<OrdersVo> page1 = new Page(page, pageSize);
+        IPage<OrdersVo> userOrders = orderMapper.getUserOrders(page1, ThreadLocalForId.get());
+
+        return userOrders;
     }
 }
