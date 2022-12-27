@@ -6,9 +6,11 @@ import com.killstan.takeout.entity.po.ShoppingCart;
 import com.killstan.takeout.entity.vo.ShoppingCartVo;
 import com.killstan.takeout.mapper.po.ShoppingCartMapper;
 import com.killstan.takeout.service.ShoppingCartService;
+import com.killstan.takeout.util.ConstantUtil;
 import com.killstan.takeout.util.ThreadLocalForId;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,9 +30,12 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
 
     private final ShoppingCartMapper shoppingCartMapper;
 
+    private final RedisTemplate redisTemplate;
+
     @Autowired
-    public ShoppingCartServiceImpl(ShoppingCartMapper shoppingCartMapper) {
+    public ShoppingCartServiceImpl(ShoppingCartMapper shoppingCartMapper, RedisTemplate redisTemplate) {
         this.shoppingCartMapper = shoppingCartMapper;
+        this.redisTemplate = redisTemplate;
     }
 
     /**
@@ -76,5 +81,25 @@ public class ShoppingCartServiceImpl extends ServiceImpl<ShoppingCartMapper, Sho
         lambdaQueryWrapper.eq(ShoppingCart::getUserId, userId);
         remove(lambdaQueryWrapper);
         saveBatch(shoppingCarts);
+    }
+
+    /**
+     * @Description: 删除用户的购物车
+     * @Param: []
+     * @Return: void
+     * @Author Kill_Stan
+     * @Date 2022/12/27 14:34
+     */
+    @Override
+    public void deleteUserShoppingCart() {
+        // 用户id
+        long userId = ThreadLocalForId.get();
+        // redis 中用户购物车的 key
+        String redisShoppingCartKey = ConstantUtil.REDIS_SHOP_CART + userId;
+        redisTemplate.delete(redisShoppingCartKey);
+        redisTemplate.opsForSet().remove(ConstantUtil.REDIS_SHOP_CART_SET, userId);
+        LambdaQueryWrapper<ShoppingCart> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(ShoppingCart::getUserId, userId);
+        remove(lambdaQueryWrapper);
     }
 }

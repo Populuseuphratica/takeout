@@ -58,9 +58,14 @@ public class AddressController {
      */
     @PostMapping
     public ResultVo addAddress(@RequestBody Address address) {
+        Address defaultAddress = getDefaultAddressByUserId();
         address.setUserId(ThreadLocalForId.get());
-        // 新建地址不为默认地址
-        address.setIsDefault(0);
+        // 没有默认地址时设为默认地址
+        if (defaultAddress == null) {
+            address.setIsDefault(1);
+        } else {
+            address.setIsDefault(0);
+        }
         addressService.save(address);
 
         return ResultVo.success(null);
@@ -135,12 +140,30 @@ public class AddressController {
      */
     @GetMapping("/default")
     public ResultVo getDefaultAddress() {
-        long userId = ThreadLocalForId.get();
-        Address address = addressService.getById(userId);
+
+        Address address = getDefaultAddressByUserId();
         if (address == null) {
             return ResultVo.fail("当前用户没有默认地址");
         }
         return ResultVo.success(address);
+    }
+
+    /**
+     * @Description: 获取当前用户默认地址
+     * @Param: []
+     * @Return: com.killstan.takeout.entity.po.Address
+     * 不存在则为null
+     * @Author Kill_Stan
+     * @Date 2022/12/25 23:13
+     */
+    private Address getDefaultAddressByUserId() {
+        long userId = ThreadLocalForId.get();
+        LambdaQueryWrapper<Address> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(Address::getIsDefault, 1)
+                .eq(Address::getUserId, userId)
+                .eq(Address::getIsDeleted, 0);
+        Address address = addressService.getOne(lambdaQueryWrapper);
+        return address;
     }
 
 

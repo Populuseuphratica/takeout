@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -153,11 +152,7 @@ public class ShoppingCartController {
      */
     @DeleteMapping("/clean")
     public ResultVo cleanShoppingCart() {
-        // 用户id
-        long userId = ThreadLocalForId.get();
-        // redis 中用户购物车的 key
-        String redisShoppingCart = ConstantUtil.REDIS_SHOP_CART + userId;
-        redisTemplate.opsForValue().set(redisShoppingCart, new ArrayList<ShoppingCartVo>());
+        shoppingCartService.deleteUserShoppingCart();
         return ResultVo.success(null);
     }
 

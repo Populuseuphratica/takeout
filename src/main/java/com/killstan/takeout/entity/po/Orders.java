@@ -1,5 +1,7 @@
 package com.killstan.takeout.entity.po;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -18,10 +20,11 @@ import java.time.LocalDateTime;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@ApiModel(value = "Order对象", description = "")
-public class Order {
-    
+@ApiModel(value = "Orders对象", description = "")
+public class Orders {
+
     @ApiModelProperty(value = "订单号，雪花算法")
+    @TableId(type = IdType.ASSIGN_ID)
     private Long orderId;
 
     @ApiModelProperty(value = "0：待付款；1：待派送；2：派送中；3：已收货：4：取消")

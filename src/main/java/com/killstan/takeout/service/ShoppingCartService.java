@@ -21,7 +21,7 @@ public interface ShoppingCartService extends IService<ShoppingCart> {
      * @Description: 从数据库获取当前用户的购物车
      * @Param: []
      * @Return: java.util.List<com.killstan.takeout.entity.vo.ShoppingCartVo>
-     * null:无数据
+     * 空list:无数据
      * @Author Kill_Stan
      * @Date 2022/12/8 16:52
      */
@@ -36,4 +36,6 @@ public interface ShoppingCartService extends IService<ShoppingCart> {
      */
     @Transactional(rollbackFor = Exception.class)
     void addShoppingCart(List<ShoppingCartVo> shoppingCartVos);
+
+    void deleteUserShoppingCart();
 }
