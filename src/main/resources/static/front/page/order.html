@@ -30,7 +30,6 @@
                 v-model="loading"
                 :finished="finished"
                 finished-text="没有更多了"
-                @load="getList"
         >
             <van-cell v-for="(order,index) in orderList" :key="index" class="item">
                 <div class="timeStatus">
@@ -48,7 +47,7 @@
                 <div class="result">
                     <span>共{{order.sumCount}} 件商品,实付</span><span class="price">￥{{order.price}}</span>
                 </div>
-                <div class="btn" v-if="order.status === 4">
+                <div class="btn" v-if="order.status === 3">
                     <div class="btnAgain" @click="addOrderAgain(order)">再来一单</div>
                 </div>
             </van-cell>
@@ -118,7 +117,7 @@
                     if (records && Array.isArray(records)) {
                         records.forEach(item => {
                             let count = 0
-                            item.orderDetails.forEach(ele => {
+                            item.orderDetailList.forEach(ele => {
                                 count += ele.count
                             })
                             item.sumCount = count

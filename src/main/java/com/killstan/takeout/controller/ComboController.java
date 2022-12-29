@@ -60,9 +60,11 @@ public class ComboController {
     }
 
     /**
-     * @param status
-     * @param comboIds
-     * @return
+     * @Description: 更新套餐状态
+     * @Param: [status, comboIds]
+     * @Return: com.killstan.takeout.entity.vo.ResultVo
+     * @Author Kill_Stan
+     * @Date 2022/12/29 20:13
      */
     @PostMapping("/status/{status}")
     @Transactional(rollbackFor = Exception.class)
@@ -71,7 +73,7 @@ public class ComboController {
         if (comboIds.size() == 0) {
             return ResultVo.fail("停售失败，参数错误，请刷新后重试");
         }
-        // TODO 采用updateBatch会快一点（减少数据库连接的使用），采用真正的批量更新会更快
+        // 采用updateBatch会快一点（减少数据库连接的使用），采用真正的批量更新会更快
         LambdaUpdateWrapper<Combo> lambdaUpdateWrapper = new LambdaUpdateWrapper();
         comboIds.forEach(comboId -> {
             if (!"".equals(comboId)) {

@@ -40,8 +40,15 @@ public class OrderController {
         return resultVo;
     }
 
+    /**
+     * @Description: 获取用户历史订单
+     * @Param: [page, pageSize]
+     * @Return: com.killstan.takeout.entity.vo.ResultVo
+     * @Author Kill_Stan
+     * @Date 2022/12/29 15:22
+     */
     @GetMapping("/userPage")
-    public ResultVo getUserOrder(Integer page, Integer pageSize) {
+    public ResultVo getUserOrders(Integer page, Integer pageSize) {
         IPage userOrders = orderService.getUserOrders(page, pageSize);
         return ResultVo.success(userOrders);
 

@@ -61,7 +61,6 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
                     // 默认口味可使用
                     flavor.setIsDeleted(0);
 
-                    //　TODO 批量插入
                     // 数据量小，直接分条插入
                     flavorService.save(flavor);
                 }

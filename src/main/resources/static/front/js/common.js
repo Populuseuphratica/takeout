@@ -1,10 +1,5 @@
 var web_prefix = '/front'
 
-// TODO 删除
-function imgPath(path) {
-    return '/common/download?name=' + path
-}
-
 //将url传参转换为数组
 function parseUrl(url) {
     // 找到url中的第一个?号
