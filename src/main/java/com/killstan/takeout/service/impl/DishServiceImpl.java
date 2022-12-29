@@ -12,8 +12,10 @@ import com.killstan.takeout.entity.vo.ResultVo;
 import com.killstan.takeout.mapper.po.DishMapper;
 import com.killstan.takeout.service.DishService;
 import com.killstan.takeout.service.FlavorService;
+import com.killstan.takeout.util.ConstantUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -21,6 +23,7 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -33,12 +36,26 @@ import java.util.List;
 @Service
 public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements DishService {
 
-    @Autowired
-    private FlavorService flavorService;
+    private final FlavorService flavorService;
+
+    private final DishMapper dishMapper;
+
+    private final RedisTemplate redisTemplate;
 
     @Autowired
-    private DishMapper dishMapper;
+    public DishServiceImpl(FlavorService flavorService, DishMapper dishMapper, RedisTemplate redisTemplate) {
+        this.flavorService = flavorService;
+        this.dishMapper = dishMapper;
+        this.redisTemplate = redisTemplate;
+    }
 
+    /**
+     * @Description: 添加菜品
+     * @Param: [dishVo]
+     * @Return: com.killstan.takeout.entity.vo.ResultVo
+     * @Author Kill_Stan
+     * @Date 2022/12/29 21:54
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ResultVo addDish(DishVo dishVo) {
@@ -74,6 +91,8 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
         dish.setSort(1);
         dish.setIsDeleted(0);
         save(dish);
+        // 更新成功之后删除 redis 中该菜品分类的缓存
+        redisTemplate.delete(ConstantUtil.REDIS_DISH_VO + dish.getCategoryId());
 
         return ResultVo.success(null);
     }
@@ -113,6 +132,8 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
         Dish dish = new Dish();
         BeanUtils.copyProperties(dishVo, dish);
         updateById(dish);
+        // 更新成功之后删除 redis 中缓存
+        redisTemplate.delete(ConstantUtil.REDIS_DISH_VO + dish.getCategoryId());
 
         return ResultVo.success(null);
     }
@@ -151,6 +172,15 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
      */
     @Override
     public ResultVo<List<DishVo>> getDishByCategoryId(Long categoryId, String dishName, Integer status) {
+        // 如果有缓存，直接取
+        if (categoryId != null && dishName == null) {
+            Object obj = redisTemplate.opsForValue().get(ConstantUtil.REDIS_DISH_VO + categoryId);
+            if (obj != null) {
+                return ResultVo.success((List<DishVo>) obj);
+            }
+        }
+
+        // 没有缓存，从数据库中查询
         LambdaQueryWrapper<Dish> lambdaQueryWrapper = new LambdaQueryWrapper();
         lambdaQueryWrapper.eq(categoryId != null, Dish::getCategoryId, categoryId)
                 .eq(StringUtils.hasLength(dishName), Dish::getDishName, dishName)
@@ -174,8 +204,12 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
             voList.add(dishVo);
         }
 
-        return ResultVo.success(voList);
+        // 返回之前放入 redis 中缓存
+        if (categoryId != null && dishName == null) {
+            redisTemplate.opsForValue().set(ConstantUtil.REDIS_DISH_VO + categoryId, voList, Long.parseLong(ConstantUtil.REDIS_DATA_TIME), TimeUnit.DAYS);
+        }
 
+        return ResultVo.success(voList);
     }
 
 }
