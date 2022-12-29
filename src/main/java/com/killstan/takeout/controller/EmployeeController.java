@@ -58,7 +58,6 @@ public class EmployeeController {
             return ResultVo.fail("员工已禁用");
         }
 
-        // TODO 将登录员工存入 redis
         // 将员工 id 放入session
         session.setAttribute("employeeId", emp.getEmpId());
         // 因为要返回页面，密码清空
@@ -76,7 +75,6 @@ public class EmployeeController {
     @PostMapping("/logout")
     public ResultVo logout(HttpSession session) {
         session.removeAttribute("employeeId");
-        //TODO 刪除redis中員工id
         return ResultVo.success(null);
     }
 
@@ -116,9 +114,10 @@ public class EmployeeController {
 
     /**
      * 员工管理页面，查询员工列表
-     * @param current 当前页
+     *
+     * @param current  当前页
      * @param pageSize 页面数据条数
-     * @param empName 员工名
+     * @param empName  员工名
      * @return 员工数据
      */
     @GetMapping("/page")
@@ -132,7 +131,7 @@ public class EmployeeController {
         if (empName != null) {
             lambdaQueryWrapper.like(Employee::getUsername, empName);
         }
-        IPage result = employeeService.page(page,lambdaQueryWrapper);
+        IPage result = employeeService.page(page, lambdaQueryWrapper);
         // 因为要返回页面，密码清空
         List<Employee> records = result.getRecords();
         records.forEach(e -> e.setPassword(null));
@@ -143,11 +142,12 @@ public class EmployeeController {
     /**
      * 根据 id 更新员工信息
      * 根据 id 禁用与启用员工
+     *
      * @param employee 待更新员工 id与 要更新到的状态
      * @return
      */
     @PutMapping
-    public ResultVo updateEmpStatus(@RequestBody Employee employee){
+    public ResultVo updateEmpStatus(@RequestBody Employee employee) {
 
         // 前端会传过来这2个字段，使自动填充失效
         employeeService.updateById(employee);
@@ -156,14 +156,15 @@ public class EmployeeController {
 
     /**
      * 根据 id 获取员工信息
+     *
      * @param empId
      * @return
      */
     @GetMapping("/{empId}")
-    public ResultVo<Employee> getEmpById(@PathVariable("empId") Long empId){
+    public ResultVo<Employee> getEmpById(@PathVariable("empId") Long empId) {
         Employee emp = employeeService.getById(empId);
-        if(emp == null){
-            return  ResultVo.fail("该用户不存在");
+        if (emp == null) {
+            return ResultVo.fail("该用户不存在");
         }
         emp.setPassword(null);
         return ResultVo.success(emp);

@@ -97,7 +97,7 @@ public class ComboController {
     @Transactional(rollbackFor = Exception.class)
     public ResultVo deleteCombo(@RequestParam List<Long> comboIds) {
 
-        // TODO 采用updateBatch会快一点（减少数据库连接的使用），采用真正的批量更新会更快
+        // 采用updateBatch会快一点（减少数据库连接的使用），采用真正的批量更新会更快
         LambdaUpdateWrapper<Combo> lambdaUpdateWrapper = new LambdaUpdateWrapper();
         comboIds.forEach(comboId -> {
             if (!"".equals(comboId)) {
@@ -111,12 +111,19 @@ public class ComboController {
         return ResultVo.success(null);
     }
 
-    // TODO 修改套餐
-    // @GetMapping("{comboId}")
-    // public ResultVo getComboById(@PathVariable Long comboId){
-    //     Combo combo = comboService.getById(comboId);
-    //     return ResultVo.success(combo);
-    // }
+    /**
+     * @Description: 根据套餐 id 获取套餐
+     * @Param: [comboId]
+     * @Return: com.killstan.takeout.entity.vo.ResultVo
+     * @Author Kill_Stan
+     * @Date 2022/12/29 20:20
+     */
+    @GetMapping("/{comboId}")
+    public ResultVo getComboById(@PathVariable Long comboId) {
+        Combo combo = comboService.getById(comboId);
+        return ResultVo.success(combo);
+    }
+    
 
     /**
      * @Description: 根据分类 id 获取套餐
