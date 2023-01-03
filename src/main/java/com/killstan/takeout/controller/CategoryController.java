@@ -29,14 +29,18 @@ import java.util.List;
 @RequestMapping("/category")
 public class CategoryController {
 
-    @Autowired
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
+
+    private final ComboService comboService;
+
+    private final DishService dishService;
 
     @Autowired
-    private ComboService comboService;
-
-    @Autowired
-    private DishService dishService;
+    public CategoryController(CategoryService categoryService, ComboService comboService, DishService dishService) {
+        this.categoryService = categoryService;
+        this.comboService = comboService;
+        this.dishService = dishService;
+    }
 
     /**
      * 获取分类列表
