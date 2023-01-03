@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 /**
@@ -71,7 +70,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
 
         // 将 user 信息存入 redis 中，期限为 1 天
-        redisTemplate.opsForValue().set(ConstantUtil.REDIS_USER_PREFIX + user.getUserId(), user, 1, TimeUnit.DAYS);
+        // redisTemplate.opsForValue().set(ConstantUtil.REDIS_USER_PREFIX + user.getUserId(), user, 1, TimeUnit.DAYS);
 
         // 将 userID 存入 session 中
         session.setAttribute(ConstantUtil.SESSION_USER_ID, user.getUserId());

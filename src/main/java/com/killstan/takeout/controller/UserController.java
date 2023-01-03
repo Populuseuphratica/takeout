@@ -85,5 +85,19 @@ public class UserController {
         return ResultVo.success(null);
     }
 
+    /**
+     * @Description: 用户登出
+     * @Param: []
+     * @Return: com.killstan.takeout.entity.vo.ResultVo
+     * @Author Kill_Stan
+     * @Date 2023/1/3 16:44
+     */
+    @PostMapping("/logout")
+    public ResultVo logout(HttpSession session) {
+        session.removeAttribute(ConstantUtil.SESSION_USER_ID);
+
+        return ResultVo.success(null);
+    }
+
 }
 
