@@ -1,0 +1,80 @@
+server:
+  port: 8080
+
+spring:
+  main:
+    # 开启 Bean 覆盖（读写分离需要）
+    allow-bean-definition-overriding: true
+  shardingsphere:
+    datasource:
+      names: master,slave01
+      master:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url:
+        username:
+        password:
+      slave01:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url:
+        username:
+        password:
+    masterslave:
+      # 读写分离配置
+      load-balance-algorithm-type: round_robin #轮询
+      # 最终的数据源名称
+      name: dataSource
+      # 主库数据源名称
+      master-data-source-name: master
+      # 从库数据源名称列表，多个逗号分隔
+      slave-data-source-names: slave01
+    props:
+      sql:
+        show: true #开启SQL显示，默认false
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 20MB
+  #===========Redis配置===========
+  redis:
+    host:
+    port: 6379
+    # 连接超时时间（毫秒）
+    timeout: 10000ms
+    # Redis服务器连接密码
+    password:
+    pool:
+      # 连接池中的最小空闲连接
+      minIdle: 1
+      # 连接池中的最大空闲连接
+      maxIdle: 10
+      # 连接池最大阻塞等待时间（使用负值表示没有限制）
+      maxWait: 3
+      # 连接池最大连接数（使用负值表示没有限制）
+      maxActive: 8
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # 开启驼峰命名
+    map-underscore-to-camel-case: true
+
+#腾讯云cos
+cos:
+  path:
+  region:
+  access-key-id:
+  access-key-secret:
+  bucket-name:
+  root-directory:
+
+
+tencent:
+  sms:
+    secretId:  #填入自己的访问秘钥,位置在右上角点击个人头像->选择访问管理->新建秘钥
+    secretKey:  #同上, 这个是secretkey
+    appId:  #短信控制台页面->左侧应用管理->应用列表的 SDKAppId
+    signName:  #短信控制台页面->左侧国内短信->签名管理 签名内容
+    templateId:  #短信控制台页面->左侧国内短信->正文模板管理 Id
+    #endpoint: sms.tencentcloudapi.com #访问的url
