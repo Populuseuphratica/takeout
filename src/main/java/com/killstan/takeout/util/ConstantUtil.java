@@ -26,6 +26,9 @@ public class ConstantUtil {
     // redis 中，用户购物车前缀，后面+用户id
     public static final String REDIS_SHOP_CART = "SHOP_CART_";
 
+    // redis 中，dish 缓存 key，后接分类 id
+    public static final String REDIS_DISH_VO = "DISH_VO_CATEGORY_ID_";
+
     // redis 中，用户购物车存的 Set 名,值为 userId
     public static final String REDIS_SHOP_CART_SET = "SHOP_CART_SET";
 

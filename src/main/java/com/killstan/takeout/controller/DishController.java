@@ -21,8 +21,12 @@ import java.util.List;
 @RequestMapping("/dish")
 public class DishController {
 
+    private final DishService dishService;
+
     @Autowired
-    private DishService dishService;
+    public DishController(DishService dishService) {
+        this.dishService = dishService;
+    }
 
     /**
      * 添加菜品
@@ -88,7 +92,7 @@ public class DishController {
      * @param status     菜品状态（表明是否由用户端菜品页面传来请求）
      * @return
      */
-    @GetMapping("list")
+    @GetMapping("/list")
     public ResultVo<List<DishVo>> getDishByCategoryId(@RequestParam(name = "categoryId", required = false) Long categoryId, @RequestParam(name = "dishName", required = false) String dishName, @RequestParam(name = "status", required = false) Integer status) {
 
         ResultVo<List<DishVo>> dishByCategoryId = dishService.getDishByCategoryId(categoryId, dishName, status);

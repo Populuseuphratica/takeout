@@ -19,8 +19,12 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/common")
 public class CommonController {
 
+    private final BaseObjectStorage objectStorage;
+
     @Autowired
-    private BaseObjectStorage objectStorage;
+    public CommonController(BaseObjectStorage objectStorage) {
+        this.objectStorage = objectStorage;
+    }
 
     /**
      * 上传图片
